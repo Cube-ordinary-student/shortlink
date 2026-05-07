@@ -10,7 +10,6 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/aggregation/pom.xml" />
-        <option value="$PROJECT_DIR$/gateway/pom.xml" />
       </set>
     </option>
   </component>
