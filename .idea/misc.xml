@@ -9,9 +9,8 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/admin/pom.xml" />
+        <option value="$PROJECT_DIR$/aggregation/pom.xml" />
         <option value="$PROJECT_DIR$/gateway/pom.xml" />
-        <option value="$PROJECT_DIR$/project/pom.xml" />
       </set>
     </option>
   </component>
