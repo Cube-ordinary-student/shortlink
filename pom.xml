@@ -13,6 +13,8 @@
         SaaS短链接系统，包含短链接生成、解析、统计等功能，支持高并发访问和分布式部署，提供稳定可靠的短链接服务。
     </description>
     <modules>
+        <module>admin</module>
+        <module>project</module>
         <module>gateway</module>
     </modules>
 
