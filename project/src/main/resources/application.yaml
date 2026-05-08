@@ -1,0 +1,38 @@
+server:
+  port: 8002
+
+spring:
+  application:
+    name: short-link-project
+  profiles:
+    active: dev
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 123456
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: -1ms
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      table-underline: true
+
+logging:
+  level:
+    root: INFO
+    com.lanyue.shortlink.project: DEBUG
