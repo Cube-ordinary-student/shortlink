@@ -16,93 +16,51 @@
     <description>短链接平台API网关</description>
 
     <dependencies>
-        <!-- Spring Cloud Gateway -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
-            <version>4.1.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
-        <!-- Spring Cloud Loadbalancer -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-            <version>4.1.2</version>
+            <artifactId>spring-cloud-loadbalancer</artifactId>
         </dependency>
 
-        <!-- Spring Boot Starter Redis -->
+        <!-- Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider xxx -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
-            <version>${spring-boot.version}</version>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
         </dependency>
 
-        <!-- Redisson for Distributed Lock -->
         <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
-            <version>3.25.2</version>
-        </dependency>
-
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring-boot.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-boot.version}</version>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring-boot.version}</version>
-            <scope>test</scope>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
         </dependency>
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
