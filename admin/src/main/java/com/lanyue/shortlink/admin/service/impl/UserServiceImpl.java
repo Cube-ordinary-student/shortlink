@@ -1,6 +1,7 @@
 package com.lanyue.shortlink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -22,6 +23,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -89,6 +91,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         if (userDO == null) {
             throw new ClientException(UserErrorCodeEnum.USERNAME_VERIFICATION_FAILED + " 或 " + UserErrorCodeEnum.USER_PASSWORD_VERIFICATION_FAILED.getMessage());
         }
+        //从redis中获取token，如果存在，说明用户已经登录，直接返回token
+        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(USER_LOGIN_KEY + username);
+        if (CollUtil.isNotEmpty(map)) {
+            stringRedisTemplate.expire(USER_LOGIN_KEY + username, 30, TimeUnit.MINUTES);
+            String token = map.keySet().stream()
+                    .findFirst()
+                    .map(Object::toString)
+                    .orElseThrow(() -> new ClientException(UserErrorCodeEnum.USER_NOT_LOGIN));
+            return new UserLoginRespDTO(token);
+        }
         //生成token，保存到redis中，设置过期时间
         String token = UUID.randomUUID().toString();
         stringRedisTemplate.opsForHash().put(USER_LOGIN_KEY + username, token, JSON.toJSONString(userDO));
@@ -103,6 +115,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Override
     public void logout(String username, String token) {
-
+        if (checkLogin(username, token)) {
+            stringRedisTemplate.delete(USER_LOGIN_KEY + username);
+            return;
+        }
+        throw new ClientException("用户Token不存在或用户未登录");
     }
 }
