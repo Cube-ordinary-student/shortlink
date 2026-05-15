@@ -14,11 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserLoginRespDTO {
 
-    private String id;
-
     private String token;
 
-    private String username;
-
-    private String realName;
 }

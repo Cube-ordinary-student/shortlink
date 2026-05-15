@@ -1,6 +1,8 @@
 package com.lanyue.shortlink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.admin.common.constant.RedisCacheConstant;
 import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
@@ -17,7 +19,13 @@ import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static com.lanyue.shortlink.admin.common.constant.RedisCacheConstant.USER_LOGIN_KEY;
 
 /**
  * 用户接口实现层
@@ -29,6 +37,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final RBloomFilter<String> userRegisterBloomFilter;
 
     private final RedissonClient redissonClient;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public UserRespDTO getUserByUsername(String username) {
@@ -57,7 +66,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
                 throw new ClientException(UserErrorCodeEnum.USER_NAME_REGISTER_FAILED);
             }
             //TODO：把用户添加到默认分组中
-
             userRegisterBloomFilter.add(username);
 
 
@@ -71,7 +79,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
-        return null;
+        String username = requestParam.getUsername();
+        if (!hasUsername(username)) {
+            throw new ClientException(UserErrorCodeEnum.USER_NOT_EXIST);
+        }
+        QueryWrapper<UserDO> wrapper = new QueryWrapper<UserDO>().eq("username", username)
+                .eq("password", requestParam.getPassword());
+        UserDO userDO = baseMapper.selectOne(wrapper);
+        if (userDO == null) {
+            throw new ClientException(UserErrorCodeEnum.USERNAME_VERIFICATION_FAILED + " 或 " + UserErrorCodeEnum.USER_PASSWORD_VERIFICATION_FAILED.getMessage());
+        }
+        //生成token，保存到redis中，设置过期时间
+        String token = UUID.randomUUID().toString();
+        stringRedisTemplate.opsForHash().put(USER_LOGIN_KEY + username, token, JSON.toJSONString(userDO));
+        stringRedisTemplate.expire(USER_LOGIN_KEY + username, 30, TimeUnit.MINUTES);
+        return new UserLoginRespDTO(token);
     }
 
     @Override
