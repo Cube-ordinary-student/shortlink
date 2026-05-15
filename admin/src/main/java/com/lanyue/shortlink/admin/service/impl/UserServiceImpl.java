@@ -39,11 +39,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final RBloomFilter<String> userRegisterBloomFilter;
 
     private final RedissonClient redissonClient;
+
     private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public UserRespDTO getUserByUsername(String username) {
-        return null;
+        if (!hasUsername(username)) {
+            throw new ClientException(UserErrorCodeEnum.USER_NOT_EXIST);
+        }
+        QueryWrapper<UserDO> wrapper = new QueryWrapper<UserDO>().eq("username", username);
+        UserDO userDO = baseMapper.selectOne(wrapper);
+        UserRespDTO userRespDTO = new UserRespDTO();
+        BeanUtil.copyProperties(userDO, userRespDTO);
+        return userRespDTO;
     }
 
     @Override
