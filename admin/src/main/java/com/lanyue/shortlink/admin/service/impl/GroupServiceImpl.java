@@ -9,6 +9,7 @@ import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.GroupRespDTO;
 import com.lanyue.shortlink.admin.service.GroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implements GroupService {
+
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public List<GroupRespDTO> listGroup() {
