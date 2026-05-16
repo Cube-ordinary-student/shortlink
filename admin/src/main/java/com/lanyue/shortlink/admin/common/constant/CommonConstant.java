@@ -20,4 +20,6 @@ public class CommonConstant {
     public static final String TOKEN = "token";
 
     public static final String REAL_NAME = "realName";
+
+    public static final int GROUP_COUNT_MAX = 10;
 }
