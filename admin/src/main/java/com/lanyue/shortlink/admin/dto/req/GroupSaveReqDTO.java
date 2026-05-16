@@ -2,12 +2,14 @@ package com.lanyue.shortlink.admin.dto.req;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * 分组创建请求参数
  */
 @Data
+@AllArgsConstructor
 public class GroupSaveReqDTO {
 
     @NotBlank(message = "分组名称不能为空")

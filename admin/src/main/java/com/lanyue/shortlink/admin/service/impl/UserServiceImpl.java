@@ -10,10 +10,12 @@ import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
 import com.lanyue.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.lanyue.shortlink.admin.dao.entity.UserDO;
 import com.lanyue.shortlink.admin.dao.mapper.UserMapper;
+import com.lanyue.shortlink.admin.dto.req.GroupSaveReqDTO;
 import com.lanyue.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.lanyue.shortlink.admin.dto.req.UserRegisterReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserRespDTO;
+import com.lanyue.shortlink.admin.service.GroupService;
 import com.lanyue.shortlink.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
@@ -41,6 +43,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final RedissonClient redissonClient;
 
     private final StringRedisTemplate stringRedisTemplate;
+
+    private final GroupService groupService;
 
     @Override
     public UserRespDTO getUserByUsername(String username) {
@@ -75,10 +79,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
             if (baseMapper.insert(userDO) < 1) {
                 throw new ClientException(UserErrorCodeEnum.USER_NAME_REGISTER_FAILED);
             }
-            //TODO：把用户添加到默认分组中
+            groupService.saveGroup(new GroupSaveReqDTO("默认分组"));
             userRegisterBloomFilter.add(username);
-
-
         }catch (DuplicateKeyException ex) {
             throw new ClientException(UserErrorCodeEnum.USER_NAME_EXIST);
         }finally {
