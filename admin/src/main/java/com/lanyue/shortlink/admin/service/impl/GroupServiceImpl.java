@@ -1,8 +1,10 @@
 package com.lanyue.shortlink.admin.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.admin.common.biz.user.UserContext;
+import com.lanyue.shortlink.admin.common.constant.CommonConstant;
 import com.lanyue.shortlink.admin.common.constant.RedisCacheConstant;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
 import com.lanyue.shortlink.admin.common.enums.GroupErrorCodeEnum;
@@ -38,7 +40,18 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Override
     public List<GroupRespDTO> listGroup() {
-        return List.of();
+        QueryWrapper<GroupDO> queryWrapper = new QueryWrapper<GroupDO>()
+                .eq(CommonConstant.USERNAME, UserContext.getUsername());
+        List<GroupDO> groupDOS = baseMapper.selectList(queryWrapper);
+        return groupDOS.stream().map(groupDO -> GroupRespDTO.builder()
+                .gid(groupDO.getGid())
+                .name(groupDO.getName())
+                .username(groupDO.getUsername())
+                .description(groupDO.getDescription())
+                .sortOrder(groupDO.getSortOrder())
+                .createTime(groupDO.getCreateTime())
+                .updateTime(groupDO.getUpdateTime())
+                .build()).toList();
     }
 
     @Override
@@ -47,9 +60,10 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         RLock lock = redisson.getLock(String.format(RedisCacheConstant.USER_GROUP_KEY, name));
         lock.lock();
         try {
-            //TODO :出数据库中查询是否存在，用户的所有分组，是否达到分组数量的限制
-
-
+            List<GroupRespDTO> groupRespDTOS = listGroup();
+            if(groupRespDTOS != null && groupRespDTOS.size() >= CommonConstant.GROUP_COUNT_MAX) {
+                throw new ServiceException(GroupErrorCodeEnum.USER_GROUP_COUNT_MAX);
+            }
             String gid = null;
             int retryCount = 0;
             int maxRetryCount = 10;

@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.admin.common.constant.RedisCacheConstant;
+import com.lanyue.shortlink.admin.common.constant.ShortLinkAdminConstant;
 import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
 import com.lanyue.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.lanyue.shortlink.admin.dao.entity.UserDO;
@@ -79,7 +80,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
             if (baseMapper.insert(userDO) < 1) {
                 throw new ClientException(UserErrorCodeEnum.USER_NAME_REGISTER_FAILED);
             }
-            groupService.saveGroup(new GroupSaveReqDTO("默认分组"));
+            groupService.saveGroup(new GroupSaveReqDTO(ShortLinkAdminConstant.DEFAULT_GROUP_NAME));
             userRegisterBloomFilter.add(username);
         }catch (DuplicateKeyException ex) {
             throw new ClientException(UserErrorCodeEnum.USER_NAME_EXIST);
