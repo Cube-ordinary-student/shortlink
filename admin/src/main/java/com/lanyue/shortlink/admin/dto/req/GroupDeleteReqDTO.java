@@ -10,5 +10,5 @@ import lombok.Data;
 public class GroupDeleteReqDTO {
 
     @NotNull(message = "分组ID不能为空")
-    private Long id;
+    private String id;
 }

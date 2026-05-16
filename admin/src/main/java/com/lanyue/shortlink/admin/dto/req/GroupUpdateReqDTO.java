@@ -12,7 +12,7 @@ import lombok.Data;
 public class GroupUpdateReqDTO {
 
     @NotNull(message = "分组ID不能为空")
-    private Long id;
+    private String id;
 
     @NotBlank(message = "分组名称不能为空")
     @Size(max = 100, message = "分组名称长度不能超过100个字符")
