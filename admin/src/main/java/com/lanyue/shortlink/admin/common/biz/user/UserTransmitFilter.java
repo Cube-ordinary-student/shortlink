@@ -6,7 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jodd.util.StringUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class UserTransmitFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String username = httpServletRequest.getHeader(CommonConstant.USERNAME);
-        if (StringUtil.isNotBlank(username)) {
+        if (StrUtil.isNotBlank(username)) {
             String userId = httpServletRequest.getHeader(CommonConstant.USER_ID);
             String realName = httpServletRequest.getHeader(CommonConstant.REAL_NAME);
             UserInfoDTO userInfoDTO = new UserInfoDTO(userId, username, realName);
