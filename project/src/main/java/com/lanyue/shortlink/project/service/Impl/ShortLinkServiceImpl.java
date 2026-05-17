@@ -1,7 +1,11 @@
 package com.lanyue.shortlink.project.service.Impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.project.common.constant.CommonConstant;
 import com.lanyue.shortlink.project.common.constant.RedisCacheConstant;
@@ -34,7 +38,20 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     @Override
     public IPage<ShortLinkRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam) {
-        return null;
+        Page<ShortLinkDO> page = new Page<>(requestParam.getPageNum(), requestParam.getPageSize());
+        LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class);
+        if (StrUtil.isNotBlank(requestParam.getGid())) {
+            queryWrapper.eq(ShortLinkDO::getGid, requestParam.getGid());
+        }
+        queryWrapper.eq(ShortLinkDO::getDelFlag, 0);
+        queryWrapper.orderByDesc(ShortLinkDO::getCreateTime);
+
+        IPage<ShortLinkDO> resultPage = baseMapper.selectPage(page, queryWrapper);
+        return resultPage.convert(each -> {
+            ShortLinkRespDTO result = BeanUtil.toBean(each, ShortLinkRespDTO.class);
+            result.setShortLink("http://" + each.getDomain() + "/" + each.getShortLinkSuffix());
+            return result;
+        });
     }
 
     @Override
@@ -77,7 +94,6 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }finally {
             lock.unlock();
         }
-
     }
 
     private boolean hasSuffix(String customSuffix) {
