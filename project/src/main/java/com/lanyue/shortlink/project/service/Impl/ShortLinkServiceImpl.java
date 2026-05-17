@@ -14,12 +14,14 @@ import com.lanyue.shortlink.project.dto.resp.ShortLinkRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkStatsRespDTO;
 import com.lanyue.shortlink.project.service.ShortLinkService;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RBloomFilter;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLinkDO> implements ShortLinkService {
 
+    private final RBloomFilter<String> shortLinkBloomFilter;
     @Override
     public IPage<ShortLinkRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam) {
         return null;
