@@ -2,6 +2,7 @@ package com.lanyue.shortlink.admin.controller;
 
 import com.lanyue.shortlink.admin.common.convention.result.Result;
 import com.lanyue.shortlink.admin.common.convention.result.Results;
+import com.lanyue.shortlink.admin.dto.req.UserActualRespDTO;
 import com.lanyue.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.lanyue.shortlink.admin.dto.req.UserRegisterReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserLoginRespDTO;
@@ -21,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * 根据用户名查询用户信息
+     * 根据用户名查询用户信息(脱敏)
      */
     @GetMapping("/api/short-link/admin/v1/user/{username}")
     public Result<UserRespDTO> getUserByUsername(@PathVariable("username") String username) {
@@ -30,11 +31,12 @@ public class UserController {
     }
 
     /**
-     * 查询用户名是否存在
+     * 查询用户信息无脱敏
      */
-    @GetMapping("/api/short-link/admin/v1/user/has-username")
-    public Result<Boolean> hasUsername(@RequestParam("username") String username) {
-        return Results.success(userService.hasUsername(username));
+    @GetMapping("/api/short-link/admin/v1/actual/user/{username}")
+    public Result<UserActualRespDTO> getActualUserByUsername(@PathVariable("username") String username) {
+        UserActualRespDTO result = userService.getActualUserByUsername(username);
+        return Results.success(result);
     }
 
     /**
@@ -44,6 +46,14 @@ public class UserController {
     public Result<Void> register(@RequestBody @Valid UserRegisterReqDTO requestParam) {
         userService.register(requestParam);
         return Results.success("注册成功", null);
+    }
+
+    /**
+     * 查询用户名是否存在
+     */
+    @GetMapping("/api/short-link/admin/v1/user/has-username")
+    public Result<Boolean> hasUsername(@RequestParam("username") String username) {
+        return Results.success(userService.hasUsername(username));
     }
 
     /**

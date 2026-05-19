@@ -10,6 +10,7 @@ import com.lanyue.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.lanyue.shortlink.admin.dao.entity.UserDO;
 import com.lanyue.shortlink.admin.dao.mapper.UserMapper;
 import com.lanyue.shortlink.admin.dto.req.GroupSaveReqDTO;
+import com.lanyue.shortlink.admin.dto.req.UserActualRespDTO;
 import com.lanyue.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.lanyue.shortlink.admin.dto.req.UserRegisterReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserLoginRespDTO;
@@ -48,13 +49,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     @Override
     public UserRespDTO getUserByUsername(String username) {
         if (!hasUsername(username)) {
-            throw new ClientException(UserErrorCodeEnum.USER_NOT_EXIST);
+            throw new ClientException(UserErrorCodeEnum.USER_NULL);
         }
         QueryWrapper<UserDO> wrapper = new QueryWrapper<UserDO>().eq("username", username);
         UserDO userDO = baseMapper.selectOne(wrapper);
         UserRespDTO userRespDTO = new UserRespDTO();
         BeanUtil.copyProperties(userDO, userRespDTO);
         return userRespDTO;
+    }
+
+    @Override
+    public UserActualRespDTO getActualUserByUsername(String username) {
+        UserRespDTO userRespDTO = getUserByUsername(username);
+        UserActualRespDTO userActualRespDTO = new UserActualRespDTO();
+        BeanUtil.copyProperties(userRespDTO, userActualRespDTO);
+        return userActualRespDTO;
     }
 
     @Override

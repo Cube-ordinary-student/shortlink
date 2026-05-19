@@ -2,6 +2,7 @@ package com.lanyue.shortlink.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lanyue.shortlink.admin.dao.entity.UserDO;
+import com.lanyue.shortlink.admin.dto.req.UserActualRespDTO;
 import com.lanyue.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.lanyue.shortlink.admin.dto.req.UserRegisterReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserLoginRespDTO;
@@ -59,4 +60,12 @@ public interface UserService extends IService<UserDO> {
      * @param token    登录token
      */
     void logout(String username, String token);
+
+    /**
+     * 获取实际用户信息
+     *
+     * @param username 用户名
+     * @return 用户信息
+     */
+    UserActualRespDTO getActualUserByUsername(String username);
 }
