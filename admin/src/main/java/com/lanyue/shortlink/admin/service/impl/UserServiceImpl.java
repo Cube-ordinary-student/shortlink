@@ -2,7 +2,6 @@ package com.lanyue.shortlink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
@@ -30,8 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import static com.lanyue.shortlink.admin.common.constant.RedisCacheConstant.USER_LOGIN_KEY;
 
 /**
  * 用户接口实现层
@@ -111,28 +108,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
         String username = requestParam.getUsername();
         if (!hasUsername(username)) {
-            throw new ClientException(UserErrorCodeEnum.USER_NOT_EXIST);
+            throw new ClientException(UserErrorCodeEnum.USER_NULL);
         }
         QueryWrapper<UserDO> wrapper = new QueryWrapper<UserDO>().eq("username", username)
                 .eq("password", requestParam.getPassword());
         UserDO userDO = baseMapper.selectOne(wrapper);
         if (userDO == null) {
-            throw new ClientException(UserErrorCodeEnum.USERNAME_VERIFICATION_FAILED + " 或 " + UserErrorCodeEnum.USER_PASSWORD_VERIFICATION_FAILED.getMessage());
+            throw new ClientException(UserErrorCodeEnum.USER_USERNAME_OR_PASSWORD_ERROR);
         }
         //从redis中获取token，如果存在，说明用户已经登录，直接返回token
-        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(USER_LOGIN_KEY + username);
+        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(RedisKeyConstant.USER_LOGIN_KEY + username);
         if (CollUtil.isNotEmpty(map)) {
-            stringRedisTemplate.expire(USER_LOGIN_KEY + username, 30, TimeUnit.MINUTES);
+            stringRedisTemplate.expire(RedisKeyConstant.USER_LOGIN_KEY + username, 30, TimeUnit.MINUTES);
             String token = map.keySet().stream()
                     .findFirst()
                     .map(Object::toString)
-                    .orElseThrow(() -> new ClientException(UserErrorCodeEnum.USER_NOT_LOGIN));
+                    .orElseThrow(() -> new ClientException("用户登录错误"));
             return new UserLoginRespDTO(token);
         }
         //生成token，保存到redis中，设置过期时间
         String token = UUID.randomUUID().toString();
-        stringRedisTemplate.opsForHash().put(USER_LOGIN_KEY + username, token, JSON.toJSONString(userDO));
-        stringRedisTemplate.expire(USER_LOGIN_KEY + username, 30, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForHash().put(RedisKeyConstant.USER_LOGIN_KEY + username, token, JSON.toJSONString(userDO));
+        stringRedisTemplate.expire(RedisKeyConstant.USER_LOGIN_KEY + username, 30, TimeUnit.MINUTES);
         return new UserLoginRespDTO(token);
     }
 

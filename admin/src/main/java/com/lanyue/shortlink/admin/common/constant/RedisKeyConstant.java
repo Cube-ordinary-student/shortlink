@@ -11,5 +11,10 @@ public class RedisKeyConstant {
      * 分组创建分布式锁 Key，后面拼接用户名
      */
     public static final String LOCK_GROUP_CREATE_KEY = "short-link:lock_group-create:%s";
-;
+
+    /**
+     * 用户登录信息 Key，后面拼接用户名
+     */
+    public static final String USER_LOGIN_KEY = "short-link:login:";
+
 }
