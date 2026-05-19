@@ -39,4 +39,9 @@ public interface GroupService extends IService<GroupDO> {
      * @param gid 删除分组请求参数
      */
     void deleteGroup(String gid);
+
+    /**
+     * 排序分组
+     */
+    void sortGroup(List<ShortLinkGroupRespDTO> requestParam);
 }
