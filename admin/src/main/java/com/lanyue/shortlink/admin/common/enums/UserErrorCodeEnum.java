@@ -11,21 +11,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserErrorCodeEnum implements IErrorCode {
 
-    USER_TOKEN_VERIFICATION_FAILED("A000200", "用户Token验证失败"),
+    USER_NULL("B000200", "用户记录不存在"),
 
-    USERNAME_VERIFICATION_FAILED("A000201", "用户名验证失败"),
+    USER_NAME_EXIST("B000201", "用户名已存在"),
 
-    USER_PASSWORD_VERIFICATION_FAILED("A000202", "密码验证失败"),
+    USER_EXIST("B000202", "用户记录已存在"),
 
-    USER_NOT_EXIST("A000203", "用户不存在"),
-
-    USER_NAME_EXIST("A000204", "用户名已存在"),
-
-    USER_NAME_REGISTER_FAILED("A000205", "用户名注册失败"),
-
-    USER_NOT_LOGIN("A000206", "用户未登录"),
-
-    USER_ALREADY_LOGIN("A000207", "用户已登录");
+    USER_SAVE_ERROR("B000203", "用户记录新增失败");
 
     private final String code;
 

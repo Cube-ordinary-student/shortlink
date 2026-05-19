@@ -9,7 +9,6 @@ import com.lanyue.shortlink.admin.common.biz.user.UserContext;
 import com.lanyue.shortlink.admin.common.constant.CommonConstant;
 import com.lanyue.shortlink.admin.common.constant.RedisCacheConstant;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
-import com.lanyue.shortlink.admin.common.enums.GroupErrorCodeEnum;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dao.mapper.GroupMapper;
 import com.lanyue.shortlink.admin.dto.req.GroupDeleteReqDTO;
