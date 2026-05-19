@@ -6,11 +6,14 @@ import com.lanyue.shortlink.admin.common.convention.result.Results;
 import com.lanyue.shortlink.admin.dto.req.GroupDeleteReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupSaveReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
-import com.lanyue.shortlink.admin.dto.resp.GroupRespDTO;
+import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.lanyue.shortlink.admin.service.GroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -26,9 +29,9 @@ public class GroupController {
     /**
      * 查询分组列表
      */
-    @GetMapping("/api/short-link/admin/v1/group/page")
-    public Result<List<GroupRespDTO>> listGroup() {
-        List<GroupRespDTO> result = groupService.listGroup();
+    @GetMapping("/api/short-link/admin/v1/group")
+    public Result<List<ShortLinkGroupRespDTO>> listGroup() {
+        List<ShortLinkGroupRespDTO> result = groupService.listGroup();
         return Results.success(result);
     }
 

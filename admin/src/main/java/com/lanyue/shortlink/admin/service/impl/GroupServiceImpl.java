@@ -9,11 +9,14 @@ import com.lanyue.shortlink.admin.common.biz.user.UserContext;
 import com.lanyue.shortlink.admin.common.constant.RedisKeyConstant;
 import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
+import com.lanyue.shortlink.admin.common.convention.result.Result;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dao.mapper.GroupMapper;
 import com.lanyue.shortlink.admin.dto.req.GroupDeleteReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.GroupRespDTO;
+import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
+import com.lanyue.shortlink.admin.remote.ShortLinkActualRemoteService;
 import com.lanyue.shortlink.admin.service.GroupService;
 import com.lanyue.shortlink.admin.tookit.RandomGeneration;
 import lombok.RequiredArgsConstructor;
@@ -37,27 +40,22 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     private final RBloomFilter<String> userGroupBloomFilter;
 
+    private final ShortLinkActualRemoteService shortLinkActualRemoteService;
+
     private final Redisson redisson;
 
     @Value("${short-link.group.max-size}")
     private final int groupMaxNum;
 
     @Override
-    public List<GroupRespDTO> listGroup() {
+    public List<ShortLinkGroupRespDTO> listGroup() {
         LambdaQueryWrapper<GroupDO> wrapper = new LambdaQueryWrapper<>(GroupDO.class)
                 .eq(GroupDO::getDelFlag, 0)
                 .eq(GroupDO::getUsername, UserContext.getUsername())
                 .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
         List<GroupDO> groupDOS = baseMapper.selectList(wrapper);
-        return groupDOS.stream().map(groupDO -> GroupRespDTO.builder()
-                .gid(groupDO.getGid())
-                .name(groupDO.getName())
-                .username(groupDO.getUsername())
-                .description(groupDO.getDescription())
-                .sortOrder(groupDO.getSortOrder())
-                .createTime(groupDO.getCreateTime())
-                .updateTime(groupDO.getUpdateTime())
-                .build()).toList();
+        // TODO 获取分组下的短链接,需要远程调用
+        return null;
     }
 
     @Override
