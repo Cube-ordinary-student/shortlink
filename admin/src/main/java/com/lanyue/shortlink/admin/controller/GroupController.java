@@ -10,10 +10,7 @@ import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.lanyue.shortlink.admin.service.GroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,7 +44,7 @@ public class GroupController {
     /**
      * 更新分组
      */
-    @PostMapping("/api/short-link/admin/v1/group/update")
+    @PutMapping("/api/short-link/admin/v1/group")
     public Result<Void> updateGroup(@RequestBody @Valid GroupUpdateReqDTO requestParam) {
         groupService.updateGroup(requestParam);
         return Results.success("更新成功", null);
