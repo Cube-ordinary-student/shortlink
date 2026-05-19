@@ -3,7 +3,6 @@ package com.lanyue.shortlink.admin.controller;
 import com.lanyue.shortlink.admin.common.biz.user.UserContext;
 import com.lanyue.shortlink.admin.common.convention.result.Result;
 import com.lanyue.shortlink.admin.common.convention.result.Results;
-import com.lanyue.shortlink.admin.dto.req.GroupDeleteReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupSaveReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
@@ -53,9 +52,9 @@ public class GroupController {
     /**
      * 删除分组
      */
-    @PostMapping("/api/short-link/admin/v1/group/delete")
-    public Result<Void> deleteGroup(@RequestBody @Valid GroupDeleteReqDTO requestParam) {
-        groupService.deleteGroup(requestParam);
+    @DeleteMapping("/api/short-link/admin/v1/group")
+    public Result<Void> deleteGroup(@RequestParam @Valid String gid) {
+        groupService.deleteGroup(gid);
         return Results.success("删除成功", null);
     }
 }
