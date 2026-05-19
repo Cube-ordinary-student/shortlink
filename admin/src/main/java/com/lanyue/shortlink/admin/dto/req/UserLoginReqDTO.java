@@ -1,6 +1,5 @@
 package com.lanyue.shortlink.admin.dto.req;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -9,9 +8,13 @@ import lombok.Data;
 @Data
 public class UserLoginReqDTO {
 
-    @NotBlank(message = "用户名不能为空")
+    /**
+     * 用户名
+     */
     private String username;
 
-    @NotBlank(message = "密码不能为空")
+    /**
+     * 密码
+     */
     private String password;
 }

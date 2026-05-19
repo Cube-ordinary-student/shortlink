@@ -2,11 +2,8 @@ package com.lanyue.shortlink.admin.dto.req;
 
 import lombok.Data;
 
-/**
- * 用户注册请求参数
- */
 @Data
-public class UserRegisterReqDTO {
+public class UserUpdateReqDTO {
     /**
      * 用户名
      */

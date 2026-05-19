@@ -16,16 +16,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @TableName("t_group")
 public class GroupDO extends BaseDO {
-
+    /**
+     * id
+     */
     private Long id;
 
+    /**
+     * 分组标识
+     */
     private String gid;
 
-    private String username;
-
+    /**
+     * 分组名称
+     */
     private String name;
 
-    private String description;
+    /**
+     * 创建分组用户名
+     */
+    private String username;
 
+    /**
+     * 分组排序
+     */
     private Integer sortOrder;
 }
