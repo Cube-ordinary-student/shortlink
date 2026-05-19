@@ -2,17 +2,18 @@ package com.lanyue.shortlink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lanyue.shortlink.admin.common.biz.user.UserContext;
+import com.lanyue.shortlink.admin.common.constant.RedisKeyConstant;
 import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
 import com.lanyue.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.lanyue.shortlink.admin.dao.entity.UserDO;
 import com.lanyue.shortlink.admin.dao.mapper.UserMapper;
-import com.lanyue.shortlink.admin.dto.req.GroupSaveReqDTO;
-import com.lanyue.shortlink.admin.dto.req.UserActualRespDTO;
-import com.lanyue.shortlink.admin.dto.req.UserLoginReqDTO;
-import com.lanyue.shortlink.admin.dto.req.UserRegisterReqDTO;
+import com.lanyue.shortlink.admin.dto.req.*;
 import com.lanyue.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserRespDTO;
 import com.lanyue.shortlink.admin.service.GroupService;
@@ -26,6 +27,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -77,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         if (hasUsername(username)) {
             throw new ClientException(UserErrorCodeEnum.USER_NAME_EXIST);
         }
-        RLock lock = redissonClient.getLock(RedisCacheConstant.LOCK_USER_REGISTER_KEY + username);
+        RLock lock = redissonClient.getLock(RedisKeyConstant.LOCK_USER_REGISTER_KEY + username);
         if (!lock.tryLock()) {
             throw new ClientException(UserErrorCodeEnum.USER_NAME_EXIST);
         }
@@ -85,18 +87,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
             UserDO userDO = new UserDO();
             BeanUtil.copyProperties(requestParam, userDO);
             if (baseMapper.insert(userDO) < 1) {
-                throw new ClientException(UserErrorCodeEnum.USER_NAME_REGISTER_FAILED);
+                throw new ClientException(UserErrorCodeEnum.USER_SAVE_ERROR);
             }
-            groupService.saveGroup(new GroupSaveReqDTO(ShortLinkAdminConstant.DEFAULT_GROUP_NAME));
+            groupService.saveGroup(requestParam.getUsername(),"默认分组");
             userRegisterBloomFilter.add(username);
         }catch (DuplicateKeyException ex) {
             throw new ClientException(UserErrorCodeEnum.USER_NAME_EXIST);
         }finally {
             lock.unlock();
         }
-
     }
 
+    public void update(UserUpdateReqDTO requestParam) {
+        if (!Objects.equals(requestParam.getUsername(), UserContext.getUsername())) {
+            throw new ClientException("当前登录用户修改请求异常");
+        }
+        UserDO userDO = new UserDO();
+        BeanUtil.copyProperties(requestParam, userDO);
+        LambdaUpdateChainWrapper<UserDO> wrapper = lambdaUpdate().eq(UserDO::getUsername, requestParam.getUsername());
+        baseMapper.update(userDO, wrapper);
+    }
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
         String username = requestParam.getUsername();

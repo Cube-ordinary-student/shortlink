@@ -6,11 +6,11 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.admin.common.biz.user.UserContext;
+import com.lanyue.shortlink.admin.common.constant.RedisKeyConstant;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dao.mapper.GroupMapper;
 import com.lanyue.shortlink.admin.dto.req.GroupDeleteReqDTO;
-import com.lanyue.shortlink.admin.dto.req.GroupSaveReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.GroupRespDTO;
 import com.lanyue.shortlink.admin.service.GroupService;
@@ -56,9 +56,8 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     }
 
     @Override
-    public void saveGroup(GroupSaveReqDTO requestParam) {
-        String name = requestParam.getName();
-        RLock lock = redisson.getLock(String.format(RedisCacheConstant.USER_GROUP_KEY, name));
+    public void saveGroup(String username, String groupName) {
+        RLock lock = redisson.getLock(String.format(RedisKeyConstant.LOCK_GROUP_CREATE_KEY, groupName));
         lock.lock();
         try {
             List<GroupRespDTO> groupRespDTOS = listGroup();

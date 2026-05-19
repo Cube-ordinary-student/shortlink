@@ -3,7 +3,6 @@ package com.lanyue.shortlink.admin.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dto.req.GroupDeleteReqDTO;
-import com.lanyue.shortlink.admin.dto.req.GroupSaveReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.GroupRespDTO;
 
@@ -26,7 +25,7 @@ public interface GroupService extends IService<GroupDO> {
      *
      * @param requestParam 创建分组请求参数
      */
-    void saveGroup(GroupSaveReqDTO requestParam);
+    void saveGroup(String username, String groupName);
 
     /**
      * 更新分组

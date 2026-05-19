@@ -5,6 +5,7 @@ import com.lanyue.shortlink.admin.common.convention.result.Results;
 import com.lanyue.shortlink.admin.dto.req.UserActualRespDTO;
 import com.lanyue.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.lanyue.shortlink.admin.dto.req.UserRegisterReqDTO;
+import com.lanyue.shortlink.admin.dto.req.UserUpdateReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserRespDTO;
 import com.lanyue.shortlink.admin.service.UserService;
@@ -40,15 +41,6 @@ public class UserController {
     }
 
     /**
-     * 用户注册
-     */
-    @PostMapping("/api/short-link/admin/v1/user/register")
-    public Result<Void> register(@RequestBody @Valid UserRegisterReqDTO requestParam) {
-        userService.register(requestParam);
-        return Results.success("注册成功", null);
-    }
-
-    /**
      * 查询用户名是否存在
      */
     @GetMapping("/api/short-link/admin/v1/user/has-username")
@@ -56,6 +48,23 @@ public class UserController {
         return Results.success(userService.hasUsername(username));
     }
 
+    /**
+     * 用户注册
+     */
+    @PostMapping("/api/short-link/admin/v1/user")
+    public Result<Void> register(@RequestBody @Valid UserRegisterReqDTO requestParam) {
+        userService.register(requestParam);
+        return Results.success("注册成功", null);
+    }
+
+    /**
+     * 修改用户信息
+     */
+    @PutMapping("api/short-link/admin/v1/user")
+    public Result<Void> update(@RequestBody @Valid UserUpdateReqDTO requestParam) {
+        userService.update(requestParam);
+        return Results.success("修改成功", null);
+    }
     /**
      * 用户登录
      */

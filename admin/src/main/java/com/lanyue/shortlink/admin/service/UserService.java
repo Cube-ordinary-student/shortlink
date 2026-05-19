@@ -5,6 +5,7 @@ import com.lanyue.shortlink.admin.dao.entity.UserDO;
 import com.lanyue.shortlink.admin.dto.req.UserActualRespDTO;
 import com.lanyue.shortlink.admin.dto.req.UserLoginReqDTO;
 import com.lanyue.shortlink.admin.dto.req.UserRegisterReqDTO;
+import com.lanyue.shortlink.admin.dto.req.UserUpdateReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserRespDTO;
 
@@ -68,4 +69,11 @@ public interface UserService extends IService<UserDO> {
      * @return 用户信息
      */
     UserActualRespDTO getActualUserByUsername(String username);
+
+    /**
+     * 修改用户信息
+     *
+     * @param requestParam 修改请求参数
+     */
+    void update(UserUpdateReqDTO requestParam);
 }
