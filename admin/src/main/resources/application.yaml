@@ -39,3 +39,7 @@ logging:
   level:
     root: INFO
     com.lanyue.shortlink.admin: DEBUG
+
+short-link:
+  group:
+    max-size: 20

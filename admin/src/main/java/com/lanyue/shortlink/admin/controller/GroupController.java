@@ -1,5 +1,6 @@
 package com.lanyue.shortlink.admin.controller;
 
+import com.lanyue.shortlink.admin.common.biz.user.UserContext;
 import com.lanyue.shortlink.admin.common.convention.result.Result;
 import com.lanyue.shortlink.admin.common.convention.result.Results;
 import com.lanyue.shortlink.admin.dto.req.GroupDeleteReqDTO;
@@ -36,7 +37,7 @@ public class GroupController {
      */
     @PostMapping("/api/short-link/admin/v1/group/create")
     public Result<Void> saveGroup(@RequestBody @Valid GroupSaveReqDTO requestParam) {
-        groupService.saveGroup(requestParam);
+        groupService.saveGroup(UserContext.getUsername(),requestParam.getName());
         return Results.success("创建成功", null);
     }
 

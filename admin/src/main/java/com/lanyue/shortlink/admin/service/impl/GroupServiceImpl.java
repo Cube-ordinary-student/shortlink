@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.admin.common.biz.user.UserContext;
 import com.lanyue.shortlink.admin.common.constant.RedisKeyConstant;
+import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dao.mapper.GroupMapper;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     private final RBloomFilter<String> userGroupBloomFilter;
 
     private final Redisson redisson;
+
+    @Value("${short-link.group.max-size}")
+    private final int groupMaxNum;
 
     @Override
     public List<GroupRespDTO> listGroup() {
@@ -61,8 +66,8 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         lock.lock();
         try {
             List<GroupRespDTO> groupRespDTOS = listGroup();
-            if(groupRespDTOS != null && groupRespDTOS.size() >= CommonConstant.GROUP_COUNT_MAX) {
-                throw new ServiceException(GroupErrorCodeEnum.USER_GROUP_COUNT_MAX);
+            if(groupRespDTOS != null && groupRespDTOS.size() >= groupMaxNum) {
+                throw new ServiceException("已超出最大分组数" + groupMaxNum);
             }
             String gid = null;
             int retryCount = 0;
@@ -72,8 +77,8 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                 if (StrUtil.isNotBlank(gid)) {
                     GroupDO groupDO = GroupDO.builder()
                             .gid(gid)
-                            .username(UserContext.getUsername())
-                            .name(name)
+                            .username(username)
+                            .name(groupName)
                             .build();
                     baseMapper.insert(groupDO);
                     userGroupBloomFilter.add(gid);
@@ -82,7 +87,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                 retryCount++;
             }
             if (StrUtil.isBlank(gid)) {
-                throw new ServiceException(GroupErrorCodeEnum.USER_GROUP_CREATE_TOO_FAST);
+                throw new ServiceException(BaseErrorCode.FLOW_LIMIT_ERROR);
             }
             userGroupBloomFilter.add(gid);
         }finally {
