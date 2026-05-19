@@ -9,12 +9,9 @@ import com.lanyue.shortlink.admin.common.biz.user.UserContext;
 import com.lanyue.shortlink.admin.common.constant.RedisKeyConstant;
 import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
-import com.lanyue.shortlink.admin.common.convention.result.Result;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dao.mapper.GroupMapper;
-import com.lanyue.shortlink.admin.dto.req.GroupDeleteReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
-import com.lanyue.shortlink.admin.dto.resp.GroupRespDTO;
 import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.lanyue.shortlink.admin.remote.ShortLinkActualRemoteService;
 import com.lanyue.shortlink.admin.service.GroupService;
@@ -63,8 +60,10 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         RLock lock = redisson.getLock(String.format(RedisKeyConstant.LOCK_GROUP_CREATE_KEY, groupName));
         lock.lock();
         try {
-            List<GroupRespDTO> groupRespDTOS = listGroup();
-            if(groupRespDTOS != null && groupRespDTOS.size() >= groupMaxNum) {
+            List<GroupDO> groupDOS = baseMapper.selectList(new LambdaQueryWrapper<GroupDO>()
+                    .eq(GroupDO::getUsername, username)
+                    .eq(GroupDO::getDelFlag, 0));
+            if(groupDOS != null && groupDOS.size() >= groupMaxNum) {
                 throw new ServiceException("已超出最大分组数" + groupMaxNum);
             }
             String gid = null;
