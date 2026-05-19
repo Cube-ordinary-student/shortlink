@@ -5,8 +5,6 @@ import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lanyue.shortlink.admin.common.constant.RedisCacheConstant;
-import com.lanyue.shortlink.admin.common.constant.ShortLinkAdminConstant;
 import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
 import com.lanyue.shortlink.admin.common.enums.UserErrorCodeEnum;
 import com.lanyue.shortlink.admin.dao.entity.UserDO;

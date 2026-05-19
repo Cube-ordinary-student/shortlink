@@ -1,6 +1,5 @@
 package com.lanyue.shortlink.admin.common.biz.user;
 
-import com.lanyue.shortlink.admin.common.constant.CommonConstant;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;

@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.admin.common.biz.user.UserContext;
-import com.lanyue.shortlink.admin.common.constant.CommonConstant;
-import com.lanyue.shortlink.admin.common.constant.RedisCacheConstant;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dao.mapper.GroupMapper;
