@@ -1,6 +1,5 @@
 package com.lanyue.shortlink.project.dto.req;
 
-import com.lanyue.shortlink.project.common.web.PageRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package com.lanyue.shortlink.project.common.database;
+package com.lanyue.shortlink.project.config;
 
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;

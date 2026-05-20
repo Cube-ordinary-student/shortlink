@@ -7,8 +7,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lanyue.shortlink.project.common.constant.CommonConstant;
-import com.lanyue.shortlink.project.common.constant.RedisCacheConstant;
 import com.lanyue.shortlink.project.common.convention.exception.ClientException;
 import com.lanyue.shortlink.project.dao.entity.ShortLinkDO;
 import com.lanyue.shortlink.project.dao.mapper.ShortLinkMapper;
