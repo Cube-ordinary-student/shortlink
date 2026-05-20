@@ -34,7 +34,7 @@ public class GroupController {
     /**
      * 创建分组
      */
-    @PostMapping("/api/short-link/admin/v1/group/create")
+    @PostMapping("/api/short-link/admin/v1/group")
     public Result<Void> saveGroup(@RequestBody @Valid GroupSaveReqDTO requestParam) {
         groupService.saveGroup(UserContext.getUsername(),requestParam.getName());
         return Results.success("创建成功", null);
