@@ -42,7 +42,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     private final Redisson redisson;
 
     @Value("${short-link.group.max-size}")
-    private final int groupMaxNum;
+    private int groupMaxNum;
 
     @Override
     public List<ShortLinkGroupRespDTO> listGroup() {
