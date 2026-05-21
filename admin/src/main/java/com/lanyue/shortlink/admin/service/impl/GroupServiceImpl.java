@@ -12,6 +12,7 @@ import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dao.mapper.GroupMapper;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
+import com.lanyue.shortlink.admin.dto.req.ShortLinkGroupReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.lanyue.shortlink.admin.remote.ShortLinkActualRemoteService;
 import com.lanyue.shortlink.admin.service.GroupService;
@@ -105,7 +106,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     public void updateGroup(GroupUpdateReqDTO requestParam) {
         LambdaUpdateWrapper<GroupDO> updateWrapper = Wrappers.lambdaUpdate(GroupDO.class)
                 .eq(GroupDO::getUsername, UserContext.getUsername())
-                .eq(GroupDO::getGid, requestParam.getId())
+                .eq(GroupDO::getGid, requestParam.getGid())
                 .eq(GroupDO::getDelFlag, 0);
         GroupDO groupDO = new GroupDO();
         groupDO.setName(requestParam.getName());
@@ -127,7 +128,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     }
 
     @Override
-    public void sortGroup(List<ShortLinkGroupRespDTO> requestParam) {
+    public void sortGroup(List<ShortLinkGroupReqDTO> requestParam) {
         requestParam.forEach(each -> {
             GroupDO groupDO = GroupDO.builder()
                     .sortOrder(each.getSortOrder())

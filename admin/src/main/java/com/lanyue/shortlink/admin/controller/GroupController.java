@@ -5,6 +5,7 @@ import com.lanyue.shortlink.admin.common.convention.result.Result;
 import com.lanyue.shortlink.admin.common.convention.result.Results;
 import com.lanyue.shortlink.admin.dto.req.GroupSaveReqDTO;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
+import com.lanyue.shortlink.admin.dto.req.ShortLinkGroupReqDTO;
 import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.lanyue.shortlink.admin.service.GroupService;
 import jakarta.validation.Valid;
@@ -62,7 +63,7 @@ public class GroupController {
      * 排序短链接分组
      */
     @PostMapping("/api/short-link/admin/v1/group/sort")
-    public Result<Void> sortGroup(@RequestBody @Valid List<ShortLinkGroupRespDTO> requestParam) {
+    public Result<Void> sortGroup(@RequestBody @Valid List<ShortLinkGroupReqDTO> requestParam) {
         groupService.sortGroup(requestParam);
         return Results.success("排序成功", null);
     }
