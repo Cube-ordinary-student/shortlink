@@ -2,7 +2,6 @@ package com.lanyue.shortlink.project.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lanyue.shortlink.project.common.database.BaseDO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +10,11 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
+@TableName("t_link")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("t_link")
-public class ShortLinkDO extends BaseDO {
+public class ShortLinkDO {
 
     /**
      * id
