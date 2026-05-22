@@ -37,3 +37,7 @@ logging:
   level:
     root: INFO
     com.lanyue.shortlink.project: DEBUG
+
+short-link:
+  domain:
+    default: http://localhost:8080
