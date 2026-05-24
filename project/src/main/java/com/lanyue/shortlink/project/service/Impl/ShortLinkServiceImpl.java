@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
@@ -16,6 +17,7 @@ import com.lanyue.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.lanyue.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.lanyue.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
+import com.lanyue.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import com.lanyue.shortlink.project.service.ShortLinkService;
 import com.lanyue.shortlink.project.tookit.HashUtils;
@@ -34,6 +36,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -116,6 +119,31 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             result.setDomain("http://" + result.getDomain());
             return result;
         });
+    }
+
+    @Override
+    public List<ShortLinkGroupCountQueryRespDTO> queryShortLinkGroupCount(List<String> requestParam) {
+        if (requestParam == null || requestParam.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+
+        QueryWrapper<ShortLinkDO> queryWrapper = Wrappers.query();
+        queryWrapper.select("gid as gid, count(*) as count")
+                .in("gid", requestParam)
+                .eq("enable_status", 0)
+                .eq("del_flag", 0)
+                .groupBy("gid");
+
+        List<java.util.Map<String, Object>> mapList = baseMapper.selectMaps(queryWrapper);
+
+        return mapList.stream()
+                .map(map -> ShortLinkGroupCountQueryRespDTO.builder()
+                        .gid((String) map.get("gid"))
+                        .count(java.util.Optional.ofNullable(map.get("count"))
+                                .map(v -> ((Number) v).intValue())
+                                .orElse(0))
+                        .build())
+                .toList();
     }
 
     @SneakyThrows

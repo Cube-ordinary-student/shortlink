@@ -6,7 +6,10 @@ import com.lanyue.shortlink.project.dao.entity.ShortLinkDO;
 import com.lanyue.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.lanyue.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
+import com.lanyue.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkPageRespDTO;
+
+import java.util.List;
 
 public interface ShortLinkService extends IService<ShortLinkDO> {
 
@@ -25,4 +28,12 @@ public interface ShortLinkService extends IService<ShortLinkDO> {
      * @return
      */
     IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam);
+
+    /**
+     * 查询分组短链接数量
+     *
+     * @param requestParam
+     * @return
+     */
+    List<ShortLinkGroupCountQueryRespDTO> queryShortLinkGroupCount(List<String> requestParam);
 }
