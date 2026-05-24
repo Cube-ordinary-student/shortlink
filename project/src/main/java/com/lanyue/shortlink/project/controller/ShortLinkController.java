@@ -1,14 +1,15 @@
 package com.lanyue.shortlink.project.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lanyue.shortlink.project.common.convention.result.Result;
 import com.lanyue.shortlink.project.common.convention.result.Results;
 import com.lanyue.shortlink.project.dto.req.ShortLinkCreateReqDTO;
+import com.lanyue.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
+import com.lanyue.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import com.lanyue.shortlink.project.service.ShortLinkService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,4 +28,12 @@ public class ShortLinkController {
         return Results.success(result);
     }
 
+    /**
+     * 分页查询短链接
+     */
+    @GetMapping("/api/short-link/v1/page")
+    public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(ShortLinkPageReqDTO requestParam) {
+        IPage<ShortLinkPageRespDTO> result = shortLinkService.pageShortLink(requestParam);
+        return Results.success(result);
+    }
 }

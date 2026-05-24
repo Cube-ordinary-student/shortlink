@@ -40,4 +40,4 @@ logging:
 
 short-link:
   domain:
-    default: http://localhost:8080
+    default: localhost:8080

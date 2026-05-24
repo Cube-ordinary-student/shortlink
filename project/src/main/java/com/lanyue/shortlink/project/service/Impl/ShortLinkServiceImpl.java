@@ -2,16 +2,24 @@ package com.lanyue.shortlink.project.service.Impl;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.text.StrBuilder;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
 import com.lanyue.shortlink.project.dao.entity.ShortLinkDO;
 import com.lanyue.shortlink.project.dao.entity.ShortLinkGotoDO;
 import com.lanyue.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.lanyue.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.lanyue.shortlink.project.dto.req.ShortLinkCreateReqDTO;
+import com.lanyue.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
+import com.lanyue.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import com.lanyue.shortlink.project.service.ShortLinkService;
 import com.lanyue.shortlink.project.tookit.HashUtils;
+import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jsoup.Jsoup;
@@ -36,6 +44,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final RedissonClient redissonClient;
     private final StringRedisTemplate stringRedisTemplate;
     private final ShortLinkGotoMapper shortLinkGotoMapper;
+    private final JvmThreadMetrics jvmThreadMetrics;
 
     @Value("${short-link.domain.default}")
     private String createShortLinkDefaultDomain;
@@ -83,8 +92,30 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return ShortLinkCreateRespDTO.builder()
                 .gid(shortLinkDO.getGid())
                 .originUrl(requestParam.getOriginUrl())
-                .fullShortUrl(fullShortUrl)
+                .fullShortUrl("http://"+fullShortUrl)
                 .build();
+    }
+
+    @Override
+    public IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam) {
+        String gid = requestParam.getGid();
+        if (gid == null) {
+            throw new ClientException("gid不能为空");
+        }
+
+        LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
+                .eq(ShortLinkDO::getGid, gid)
+                .eq(ShortLinkDO::getEnableStatus, 0)
+                .eq(ShortLinkDO::getDelFlag, 0)
+                .orderByDesc(ShortLinkDO::getCreateTime);
+
+        IPage<ShortLinkDO> resultPage = baseMapper.selectPage(new Page<>(requestParam.getCurrent(), requestParam.getSize()), queryWrapper);
+        
+        return resultPage.convert(each -> {
+            ShortLinkPageRespDTO result = cn.hutool.core.bean.BeanUtil.toBean(each, ShortLinkPageRespDTO.class);
+            result.setDomain("http://" + result.getDomain());
+            return result;
+        });
     }
 
     @SneakyThrows
