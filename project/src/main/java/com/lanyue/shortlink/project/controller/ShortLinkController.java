@@ -5,6 +5,7 @@ import com.lanyue.shortlink.project.common.convention.result.Result;
 import com.lanyue.shortlink.project.common.convention.result.Results;
 import com.lanyue.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.lanyue.shortlink.project.dto.req.ShortLinkPageReqDTO;
+import com.lanyue.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -47,5 +48,13 @@ public class ShortLinkController {
     public Result<List<ShortLinkGroupCountQueryRespDTO>> queryShortLinkGroupCount(@RequestParam List<String> requestParam) {
         List<ShortLinkGroupCountQueryRespDTO> result = shortLinkService.queryShortLinkGroupCount(requestParam);
         return Results.success(result);
+    }
+    /**
+     * 修改短链接
+     */
+    @PostMapping("/api/short-link/v1/update")
+    public Result<Void> updateShortLink(@RequestBody ShortLinkUpdateReqDTO requestParam) {
+        shortLinkService.updateShortLink(requestParam);
+        return Results.success();
     }
 }

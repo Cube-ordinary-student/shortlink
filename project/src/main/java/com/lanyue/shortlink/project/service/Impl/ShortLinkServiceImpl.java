@@ -2,11 +2,12 @@ package com.lanyue.shortlink.project.service.Impl;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.text.StrBuilder;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
@@ -16,6 +17,7 @@ import com.lanyue.shortlink.project.dao.mapper.ShortLinkGotoMapper;
 import com.lanyue.shortlink.project.dao.mapper.ShortLinkMapper;
 import com.lanyue.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.lanyue.shortlink.project.dto.req.ShortLinkPageReqDTO;
+import com.lanyue.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -144,6 +146,63 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                                 .orElse(0))
                         .build())
                 .toList();
+    }
+
+    @Override
+    public void updateShortLink(ShortLinkUpdateReqDTO requestParam) {
+        LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
+                .eq(ShortLinkDO::getGid, requestParam.getOriginGid())
+                .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
+                .eq(ShortLinkDO::getDelFlag, 0)
+                .eq(ShortLinkDO::getEnableStatus, 0);
+
+        ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
+        if (hasShortLinkDO == null) {
+            throw new ClientException("短链接记录不存在");
+        }
+
+        if (java.util.Objects.equals(hasShortLinkDO.getGid(), requestParam.getGid())) {
+            LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
+                    .eq(ShortLinkDO::getGid, requestParam.getGid())
+                    .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
+                    .eq(ShortLinkDO::getDelFlag, 0)
+                    .eq(ShortLinkDO::getEnableStatus, 0)
+                    .set(ShortLinkDO::getOriginUrl, requestParam.getOriginUrl())
+                    .set(ShortLinkDO::getValidDateType, requestParam.getValidDateType())
+                    .set(ShortLinkDO::getValidDate, requestParam.getValidDate());
+
+            ShortLinkDO shortLinkDO = new ShortLinkDO();
+            shortLinkDO.setDescribe(requestParam.getDescribe());
+            baseMapper.update(shortLinkDO, updateWrapper);
+        } else {
+            LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
+                    .eq(ShortLinkDO::getGid, hasShortLinkDO.getGid())
+                    .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
+                    .eq(ShortLinkDO::getDelFlag, 0)
+                    .eq(ShortLinkDO::getEnableStatus, 0)
+                    .set(ShortLinkDO::getDelFlag, 1)
+                    .set(ShortLinkDO::getDelTime, System.currentTimeMillis());
+            baseMapper.update(null, updateWrapper);
+
+            ShortLinkDO shortLinkDO = new ShortLinkDO();
+            cn.hutool.core.bean.BeanUtil.copyProperties(hasShortLinkDO, shortLinkDO);
+            shortLinkDO.setId(null);
+            shortLinkDO.setGid(requestParam.getGid());
+            shortLinkDO.setOriginUrl(requestParam.getOriginUrl());
+            shortLinkDO.setValidDateType(requestParam.getValidDateType());
+            shortLinkDO.setValidDate(requestParam.getValidDate());
+            shortLinkDO.setDescribe(requestParam.getDescribe());
+            shortLinkDO.setCreateTime(null);
+            shortLinkDO.setUpdateTime(null);
+            baseMapper.insert(shortLinkDO);
+
+            LambdaUpdateWrapper<ShortLinkGotoDO> gotoUpdateWrapper = Wrappers.lambdaUpdate(ShortLinkGotoDO.class)
+                    .eq(ShortLinkGotoDO::getFullShortUrl, requestParam.getFullShortUrl())
+                    .set(ShortLinkGotoDO::getGid, requestParam.getGid());
+            shortLinkGotoMapper.update(null, gotoUpdateWrapper);
+        }
+
+        stringRedisTemplate.delete(requestParam.getFullShortUrl());
     }
 
     @SneakyThrows
