@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.common.serialize;
 
 import cn.hutool.core.util.DesensitizedUtil;
@@ -8,8 +9,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
 /**
- * 手机号脱敏反序列化
- */
+ * 手机号脱敏反序列化 */
 public class PhoneDesensitizationSerializer extends JsonSerializer<String> {
 
     @Override

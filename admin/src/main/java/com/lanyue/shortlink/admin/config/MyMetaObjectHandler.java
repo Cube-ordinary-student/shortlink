@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
@@ -8,8 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * MyBatis Plus 元数据处理器
- */
+ * MyBatis-Plus 原数据自动填充类 */
 @Primary
 @Component(value = "myMetaObjectHandlerByAdmin")
 public class MyMetaObjectHandler implements MetaObjectHandler {

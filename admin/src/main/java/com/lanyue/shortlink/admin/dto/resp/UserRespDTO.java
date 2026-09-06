@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.dto.resp;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -5,13 +6,12 @@ import com.lanyue.shortlink.admin.common.serialize.PhoneDesensitizationSerialize
 import lombok.Data;
 
 /**
- * 用户返回参数响应（脱敏）
- */
+ * 用户返回参数响应 */
 @Data
 public class UserRespDTO {
 
     /**
-     * 用户ID
+     * id
      */
     private Long id;
 
@@ -26,7 +26,7 @@ public class UserRespDTO {
     private String realName;
 
     /**
-     * 手机号（脱敏）
+     * 手机号
      */
     @JsonSerialize(using = PhoneDesensitizationSerializer.class)
     private String phone;

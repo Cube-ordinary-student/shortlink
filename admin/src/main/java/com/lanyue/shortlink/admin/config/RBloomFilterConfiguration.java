@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.config;
 
 import org.redisson.api.RBloomFilter;
@@ -5,6 +6,8 @@ import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 布隆过滤器配置 */
 @Configuration(value = "rBloomFilterConfigurationByAdmin")
 public class RBloomFilterConfiguration {
 

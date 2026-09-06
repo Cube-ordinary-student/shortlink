@@ -1,20 +1,14 @@
+
 package com.lanyue.shortlink.admin.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lanyue.shortlink.admin.common.database.BaseDO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * 用户实体
- */
+ * 用户持久层实体 */
 @Data
 @TableName("t_user")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserDO extends BaseDO {
 
     /**

@@ -1,10 +1,10 @@
+
 package com.lanyue.shortlink.admin.common.enums;
 
 import com.lanyue.shortlink.admin.common.convention.errorcode.IErrorCode;
 
 /**
- * 用户模块错误码
- */
+ * 用户错误码 */
 public enum UserErrorCodeEnum implements IErrorCode {
 
     USER_NULL("B000200", "用户记录不存在"),

@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.common.biz.user;
 
 import com.alibaba.fastjson2.annotation.JSONField;
@@ -7,8 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 用户信息传输对象
- */
+ * 用户信息实体 */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

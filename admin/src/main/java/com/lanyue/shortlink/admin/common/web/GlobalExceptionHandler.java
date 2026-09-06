@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.common.web;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -22,8 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * 全局异常处理器
- */
+ * 全局异常处理器 */
 @Component("globalExceptionHandlerByAdmin")
 @Slf4j
 @RestControllerAdvice

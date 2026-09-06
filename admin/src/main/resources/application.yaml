@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 8002
 
 spring:
   application:
@@ -7,39 +7,20 @@ spring:
   datasource:
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
     url: jdbc:shardingsphere:classpath:shardingsphere-config-${database.env:dev}.yaml
-  profiles:
-    active: dev
   data:
     redis:
-      host: localhost
+      host: 127.0.0.1
       port: 6379
       password: 123456
-      timeout: 3000ms
-      lettuce:
-        pool:
-          max-active: 8
-          max-idle: 8
-          min-idle: 2
-          max-wait: -1ms
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
-
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      id-type: auto
-      table-underline: true
-
-logging:
-  level:
-    root: INFO
-    com.lanyue.shortlink.admin: DEBUG
+        server-addr: 127.0.0.1:8848
 
 short-link:
   group:
-    max-size: 20
+    max-num: 20
+  flow-limit:
+    enable: true
+    time-window: 1
+    max-access-count: 20

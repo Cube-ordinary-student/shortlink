@@ -1,11 +1,13 @@
+
 package com.lanyue.shortlink.admin.dto.resp;
 
-import lombok.Builder;
 import lombok.Data;
 
+/**
+ * 短链接分组返回实体对象 */
 @Data
-@Builder
 public class ShortLinkGroupRespDTO {
+
     /**
      * 分组标识
      */

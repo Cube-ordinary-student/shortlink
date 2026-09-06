@@ -1,11 +1,11 @@
+
 package com.lanyue.shortlink.admin.common.convention.exception;
 
 import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.admin.common.convention.errorcode.IErrorCode;
 
 /**
- * 远程服务调用异常
- */
+ * 远程服务调用异常 */
 public class RemoteException extends AbstractException {
 
     public RemoteException(String message) {

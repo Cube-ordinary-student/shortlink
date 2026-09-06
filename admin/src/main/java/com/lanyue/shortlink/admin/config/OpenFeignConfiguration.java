@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.config;
 
 import com.lanyue.shortlink.admin.common.biz.user.UserContext;
@@ -6,8 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * feign 配置类
- */
+ * openFeign 微服务调用传递用户信息配置 */
 @Configuration
 public class OpenFeignConfiguration {
 

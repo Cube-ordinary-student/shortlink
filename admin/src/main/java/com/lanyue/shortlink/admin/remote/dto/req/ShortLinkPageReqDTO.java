@@ -1,22 +1,21 @@
+
 package com.lanyue.shortlink.admin.remote.dto.req;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
 
-import java.util.List;
-
+/**
+ * 短链接分页请求参数 */
 @Data
-public class ShortLinkPageReqDTO {
+public class ShortLinkPageReqDTO extends Page {
 
+    /**
+     * 分组标识
+     */
     private String gid;
 
     /**
-     * 分组标识集合（回收站分页查询使用）
+     * 排序标识
      */
-    private List<String> gidList;
-
     private String orderTag;
-
-    private Long current;
-
-    private Long size;
 }

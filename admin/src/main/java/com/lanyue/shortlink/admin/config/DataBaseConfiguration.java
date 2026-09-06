@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
@@ -8,11 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 数据库持久层配置类
- * ；value 属性指定该配置类在容器中的 bean 名称为 dataBaseConfigurationByAdmin。
- */
+ * 数据库持久层配置类 */
 @Configuration(value = "dataBaseConfigurationByAdmin")
 public class DataBaseConfiguration {
+
     /**
      * 分页插件
      */

@@ -1,8 +1,11 @@
-package com.lanyue.shortlink.admin.tookit;
+
+package com.lanyue.shortlink.admin.toolkit;
 
 import java.security.SecureRandom;
 
-public class RandomGeneration {
+/**
+ * 分组ID随机生成器 */
+public final class RandomGenerator {
 
     private static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final SecureRandom RANDOM = new SecureRandom();

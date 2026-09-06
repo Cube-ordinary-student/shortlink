@@ -1,12 +1,13 @@
+
 package com.lanyue.shortlink.admin.common.convention.result;
 
 import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.admin.common.convention.exception.AbstractException;
 
 import java.util.Optional;
+
 /**
- * 全局返回对象构造器
- */
+ * 全局返回对象构造器 */
 public final class Results {
 
     /**

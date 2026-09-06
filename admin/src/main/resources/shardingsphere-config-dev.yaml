@@ -2,7 +2,7 @@ dataSources:
   ds_0:
     dataSourceClassName: com.zaxxer.hikari.HikariDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
-    jdbcUrl: jdbc:mysql://127.0.0.1:3306/shortlink?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    jdbcUrl: jdbc:mysql://127.0.0.1:3306/link?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: root
 
@@ -34,8 +34,8 @@ rules:
     tables:
       t_user:
         columns:
-          password:
-            cipherColumn: password
+          phone:
+            cipherColumn: phone
             encryptorName: common_encryptor
           mail:
             cipherColumn: mail
