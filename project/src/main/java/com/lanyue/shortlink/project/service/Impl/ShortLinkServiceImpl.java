@@ -1,16 +1,17 @@
-package com.lanyue.shortlink.project.service.Impl;
+package com.lanyue.shortlink.project.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.text.StrBuilder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
-import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
+import com.lanyue.shortlink.project.common.convention.exception.ClientException;
+import com.lanyue.shortlink.project.common.convention.exception.ServiceException;
+import com.lanyue.shortlink.project.common.constant.RedisKeyConstant;
 import com.lanyue.shortlink.project.dao.entity.ShortLinkDO;
 import com.lanyue.shortlink.project.dao.entity.ShortLinkGotoDO;
 import com.lanyue.shortlink.project.dao.mapper.ShortLinkGotoMapper;
@@ -23,18 +24,18 @@ import com.lanyue.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import com.lanyue.shortlink.project.service.ShortLinkService;
 import com.lanyue.shortlink.project.tookit.HashUtils;
-import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
+import com.lanyue.shortlink.project.tookit.LinkUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.redisson.api.RBloomFilter;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -46,15 +47,14 @@ import java.util.concurrent.TimeUnit;
 public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLinkDO> implements ShortLinkService {
 
     private final RBloomFilter<String> shortLinkBloomFilter;
-    private final RedissonClient redissonClient;
     private final StringRedisTemplate stringRedisTemplate;
     private final ShortLinkGotoMapper shortLinkGotoMapper;
-    private final JvmThreadMetrics jvmThreadMetrics;
 
     @Value("${short-link.domain.default}")
     private String createShortLinkDefaultDomain;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam) {
         String originUrl = requestParam.getOriginUrl();
         String suffix = generateShortlinkSuffix(originUrl);
@@ -92,7 +92,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             }
             throw new ServiceException(String.format("短链接: %s重复生成", fullShortUrl));
         }
-        stringRedisTemplate.opsForValue().set(fullShortUrl, originUrl,1 ,TimeUnit.HOURS);
+        stringRedisTemplate.opsForValue().set(
+                String.format(RedisKeyConstant.GOTO_SHORT_LINK_KEY, fullShortUrl),
+                originUrl, LinkUtil.getLinkCacheValidTime(requestParam.getValidDate()) ,TimeUnit.MILLISECONDS);
         shortLinkBloomFilter.add(fullShortUrl);
         return ShortLinkCreateRespDTO.builder()
                 .gid(shortLinkDO.getGid())
@@ -149,6 +151,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateShortLink(ShortLinkUpdateReqDTO requestParam) {
         LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                 .eq(ShortLinkDO::getGid, requestParam.getOriginGid())
@@ -205,6 +208,36 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         stringRedisTemplate.delete(requestParam.getFullShortUrl());
     }
 
+    @Override
+    public String restoreUrl(String shortUri) {
+        String fullShortUrl = createShortLinkDefaultDomain + "/" + shortUri;
+        String originUrl = stringRedisTemplate.opsForValue().get(String.format(RedisKeyConstant.GOTO_SHORT_LINK_KEY, fullShortUrl));
+        if (originUrl != null) {
+            return originUrl;
+        }
+        LambdaQueryWrapper<ShortLinkGotoDO> gotoQueryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
+                .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
+        ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(gotoQueryWrapper);
+        if (shortLinkGotoDO == null) {
+            throw new ClientException("短链接不存在");
+        }
+        LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
+                .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())
+                .eq(ShortLinkDO::getFullShortUrl, fullShortUrl)
+                .eq(ShortLinkDO::getDelFlag, 0)
+                .eq(ShortLinkDO::getEnableStatus, 0);
+        ShortLinkDO shortLinkDO = baseMapper.selectOne(queryWrapper);
+        if (shortLinkDO == null) {
+            throw new ClientException("短链接不存在或已失效");
+        }
+        stringRedisTemplate.opsForValue().set(
+                String.format(RedisKeyConstant.GOTO_SHORT_LINK_KEY, fullShortUrl),
+                shortLinkDO.getOriginUrl(),
+                LinkUtil.getLinkCacheValidTime(shortLinkDO.getValidDate()),
+                TimeUnit.MILLISECONDS);
+        return shortLinkDO.getOriginUrl();
+    }
+
     @SneakyThrows
     private String getFavicon(String url) {
         URL targetUrl = new URL(url);
@@ -234,5 +267,23 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             tryCount++;
         }
         throw new ServiceException("生成短链接失败，请稍后再试");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByGid(String gid) {
+        LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
+                .eq(ShortLinkDO::getGid, gid)
+                .eq(ShortLinkDO::getDelFlag, 0)
+                .set(ShortLinkDO::getDelFlag, 1)
+                .set(ShortLinkDO::getDelTime, System.currentTimeMillis());
+        baseMapper.update(null, updateWrapper);
+    }
+
+    @Override
+    @SneakyThrows
+    public String getTitleByUrl(String url) {
+        Document document = Jsoup.connect(url).get();
+        return document.title();
     }
 }

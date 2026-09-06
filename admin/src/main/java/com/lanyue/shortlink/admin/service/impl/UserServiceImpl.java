@@ -95,6 +95,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         }
     }
 
+    @Override
     public void update(UserUpdateReqDTO requestParam) {
         if (!Objects.equals(requestParam.getUsername(), UserContext.getUsername())) {
             throw new ClientException("当前登录用户修改请求异常");

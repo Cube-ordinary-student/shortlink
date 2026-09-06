@@ -1,7 +1,7 @@
 package com.lanyue.shortlink.project.common.convention.exception;
 
-import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
-import com.lanyue.shortlink.admin.common.convention.errorcode.IErrorCode;
+import com.lanyue.shortlink.project.common.convention.errorcode.BaseErrorCode;
+import com.lanyue.shortlink.project.common.convention.errorcode.IErrorCode;
 
 /**
  * 远程服务调用异常

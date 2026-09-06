@@ -1,6 +1,6 @@
 package com.lanyue.shortlink.project.common.convention.errorcode;
 
-import com.lanyue.shortlink.admin.common.convention.errorcode.IErrorCode;
+import com.lanyue.shortlink.project.common.convention.errorcode.IErrorCode;
 
 /**
  * 基础错误码定义

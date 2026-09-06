@@ -1,8 +1,8 @@
 package com.lanyue.shortlink.project.common.convention.result;
 
-import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
-import com.lanyue.shortlink.admin.common.convention.errorcode.IErrorCode;
-import com.lanyue.shortlink.admin.common.convention.exception.AbstractException;
+import com.lanyue.shortlink.project.common.convention.errorcode.BaseErrorCode;
+import com.lanyue.shortlink.project.common.convention.errorcode.IErrorCode;
+import com.lanyue.shortlink.project.common.convention.exception.AbstractException;
 
 import java.util.Optional;
 

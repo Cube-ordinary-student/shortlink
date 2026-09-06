@@ -2,12 +2,12 @@ package com.lanyue.shortlink.project.common.web;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
-import com.lanyue.shortlink.admin.common.convention.exception.ClientException;
-import com.lanyue.shortlink.admin.common.convention.exception.RemoteException;
-import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
-import com.lanyue.shortlink.admin.common.convention.result.Result;
-import com.lanyue.shortlink.admin.common.convention.result.Results;
+import com.lanyue.shortlink.project.common.convention.errorcode.BaseErrorCode;
+import com.lanyue.shortlink.project.common.convention.exception.ClientException;
+import com.lanyue.shortlink.project.common.convention.exception.RemoteException;
+import com.lanyue.shortlink.project.common.convention.exception.ServiceException;
+import com.lanyue.shortlink.project.common.convention.result.Result;
+import com.lanyue.shortlink.project.common.convention.result.Results;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

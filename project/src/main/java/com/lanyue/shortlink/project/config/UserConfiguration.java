@@ -1,6 +1,6 @@
 package com.lanyue.shortlink.project.config;
 
-import com.lanyue.shortlink.admin.common.biz.user.UserTransmitFilter;
+import com.lanyue.shortlink.project.common.biz.user.UserTransmitFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

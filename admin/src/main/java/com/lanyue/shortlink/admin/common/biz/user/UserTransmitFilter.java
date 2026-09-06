@@ -7,9 +7,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Component;
 
-@Component
 public class UserTransmitFilter implements Filter {
     @Override
     @SneakyThrows

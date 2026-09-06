@@ -8,14 +8,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 分组持久层实体
+ * 分组实体
  */
 @Data
+@TableName("t_group")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("t_group")
 public class GroupDO extends BaseDO {
+
     /**
      * id
      */
@@ -40,4 +41,9 @@ public class GroupDO extends BaseDO {
      * 分组排序
      */
     private Integer sortOrder;
+
+    /**
+     * 删除标识 0：未删除 1：已删除
+     */
+    private Integer delFlag;
 }

@@ -1,21 +1,17 @@
 package com.lanyue.shortlink.admin.dto.resp;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.lanyue.shortlink.admin.common.serialize.PhoneDesensitizationSerializer;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * 用户信息响应参数
+ * 用户返回参数响应（脱敏）
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserRespDTO {
+
     /**
-     * id
+     * 用户ID
      */
     private Long id;
 
@@ -27,13 +23,12 @@ public class UserRespDTO {
     /**
      * 真实姓名
      */
-    @JsonSerialize(using = com.lanyue.shortlink.admin.common.serialize.RealNameDesensitizationSerializer.class)
     private String realName;
 
     /**
-     * 手机号
+     * 手机号（脱敏）
      */
-    @JsonSerialize(using = com.lanyue.shortlink.admin.common.serialize.PhoneDesensitizationSerializer.class)
+    @JsonSerialize(using = PhoneDesensitizationSerializer.class)
     private String phone;
 
     /**

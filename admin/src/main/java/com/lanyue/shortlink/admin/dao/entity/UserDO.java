@@ -7,12 +7,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * 用户实体
+ */
 @Data
+@TableName("t_user")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("t_user")
 public class UserDO extends BaseDO {
 
     /**

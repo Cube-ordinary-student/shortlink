@@ -9,23 +9,27 @@ import com.lanyue.shortlink.admin.common.biz.user.UserContext;
 import com.lanyue.shortlink.admin.common.constant.RedisKeyConstant;
 import com.lanyue.shortlink.admin.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.admin.common.convention.exception.ServiceException;
+import com.lanyue.shortlink.admin.common.convention.result.Result;
 import com.lanyue.shortlink.admin.dao.entity.GroupDO;
 import com.lanyue.shortlink.admin.dao.mapper.GroupMapper;
 import com.lanyue.shortlink.admin.dto.req.GroupUpdateReqDTO;
 import com.lanyue.shortlink.admin.dto.req.ShortLinkGroupReqDTO;
+import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.lanyue.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.lanyue.shortlink.admin.remote.ShortLinkActualRemoteService;
 import com.lanyue.shortlink.admin.service.GroupService;
 import com.lanyue.shortlink.admin.tookit.RandomGeneration;
 import lombok.RequiredArgsConstructor;
-import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 分组接口实现层
@@ -40,25 +44,45 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     private final ShortLinkActualRemoteService shortLinkActualRemoteService;
 
-    private final Redisson redisson;
+    private final RedissonClient redissonClient;
 
     @Value("${short-link.group.max-size}")
     private int groupMaxNum;
 
     @Override
     public List<ShortLinkGroupRespDTO> listGroup() {
-        LambdaQueryWrapper<GroupDO> wrapper = new LambdaQueryWrapper<>(GroupDO.class)
+        List<GroupDO> groupDOList = baseMapper.selectList(Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getDelFlag, 0)
                 .eq(GroupDO::getUsername, UserContext.getUsername())
-                .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
-        List<GroupDO> groupDOS = baseMapper.selectList(wrapper);
-        // TODO 获取分组下的短链接,需要远程调用
-        return null;
+                .orderByDesc(GroupDO::getSortOrder)
+                .orderByDesc(GroupDO::getUpdateTime));
+        if (groupDOList == null || groupDOList.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> gidList = groupDOList.stream().map(GroupDO::getGid).collect(Collectors.toList());
+        Result<List<ShortLinkGroupCountQueryRespDTO>> countResult = shortLinkActualRemoteService.listGroupShortLinkCount(gidList);
+        List<ShortLinkGroupCountQueryRespDTO> countQueryRespDTOList = countResult.getData();
+
+        return groupDOList.stream().map(each -> {
+            ShortLinkGroupRespDTO shortLinkGroupRespDTO = ShortLinkGroupRespDTO.builder()
+                    .gid(each.getGid())
+                    .name(each.getName())
+                    .sortOrder(each.getSortOrder())
+                    .shortLinkCount(0)
+                    .build();
+            if (countQueryRespDTOList != null) {
+                countQueryRespDTOList.stream()
+                        .filter(countDTO -> each.getGid().equals(countDTO.getGid()))
+                        .findFirst()
+                        .ifPresent(countDTO -> shortLinkGroupRespDTO.setShortLinkCount(countDTO.getCount()));
+            }
+            return shortLinkGroupRespDTO;
+        }).collect(Collectors.toList());
     }
 
     @Override
     public void saveGroup(String username, String groupName) {
-        RLock lock = redisson.getLock(String.format(RedisKeyConstant.LOCK_GROUP_CREATE_KEY, groupName));
+        RLock lock = redissonClient.getLock(String.format(RedisKeyConstant.LOCK_GROUP_CREATE_KEY, groupName));
         lock.lock();
         try {
             List<GroupDO> groupDOS = baseMapper.selectList(new LambdaQueryWrapper<GroupDO>()
@@ -91,7 +115,6 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         }finally {
             lock.unlock();
         }
-
     }
 
     private String generateGid() {
@@ -122,9 +145,8 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         GroupDO groupDO = new GroupDO();
         groupDO.setDelFlag(1);
         baseMapper.update(groupDO, updateWrapper);
-        //TODO 分组下的短链接删除
-
-
+        // 级联删除分组下的短链接
+        shortLinkActualRemoteService.deleteByGid(gid);
     }
 
     @Override

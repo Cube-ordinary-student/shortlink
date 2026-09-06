@@ -1,16 +1,19 @@
 package com.lanyue.shortlink.project.dto.req;
 
-import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-@Builder
 public class ShortLinkPageReqDTO {
     /**
      * 分组标识
      */
     private String gid;
+    /**
+     * 分组标识集合（回收站分页查询使用）
+     */
+    private List<String> gidList;
     /**
      * 排序类型
      */
@@ -18,11 +21,9 @@ public class ShortLinkPageReqDTO {
     /**
      * 当前页码
      */
-    @NotBlank(message = "当前页码不能为空")
     private Long current;
     /**
      * 每页数量
      */
-    @NotBlank(message = "每页数量不能为空")
     private Long size;
 }

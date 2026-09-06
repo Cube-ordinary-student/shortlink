@@ -10,70 +10,47 @@ import com.lanyue.shortlink.admin.dto.resp.UserLoginRespDTO;
 import com.lanyue.shortlink.admin.dto.resp.UserRespDTO;
 
 /**
- * 用户接口层
+ * 用户服务接口
  */
 public interface UserService extends IService<UserDO> {
 
     /**
-     * 根据用户名查询用户信息
-     *
-     * @param username 用户名
-     * @return 用户信息
+     * 根据用户名查询用户信息（脱敏）
      */
     UserRespDTO getUserByUsername(String username);
 
     /**
+     * 根据用户名查询无脱敏用户信息
+     */
+    UserActualRespDTO getActualUserByUsername(String username);
+
+    /**
      * 查询用户名是否存在
-     *
-     * @param username 用户名
-     * @return 存在返回true，不存在返回false
      */
     Boolean hasUsername(String username);
 
     /**
-     * 注册用户
-     *
-     * @param requestParam 注册请求参数
+     * 用户注册
      */
     void register(UserRegisterReqDTO requestParam);
 
     /**
+     * 修改用户信息
+     */
+    void update(UserUpdateReqDTO requestParam);
+
+    /**
      * 用户登录
-     *
-     * @param requestParam 登录请求参数
-     * @return 登录响应
      */
     UserLoginRespDTO login(UserLoginReqDTO requestParam);
 
     /**
-     * 检查用户是否登录
-     *
-     * @param username 用户名
-     * @param token    登录token
-     * @return 已登录返回true，未登录返回false
+     * 检查用户登录状态
      */
     Boolean checkLogin(String username, String token);
 
     /**
      * 用户退出登录
-     *
-     * @param username 用户名
-     * @param token    登录token
      */
     void logout(String username, String token);
-
-    /**
-     * 获取实际用户信息
-     *
-     * @param username 用户名
-     * @return 用户信息
-     */
-    UserActualRespDTO getActualUserByUsername(String username);
-
-    /**
-     * 修改用户信息
-     *
-     * @param requestParam 修改请求参数
-     */
-    void update(UserUpdateReqDTO requestParam);
 }

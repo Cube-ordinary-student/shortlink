@@ -1,28 +1,17 @@
 package com.lanyue.shortlink.admin.common.database;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
-/**
- * 数据库持久层基础对象
- */
 @Data
-public class BaseDO implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class BaseDO {
+    private Date createTime;
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    private Date updateTime;
 
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-
-    @TableField(fill = FieldFill.INSERT)
-    private Integer delFlag;
 }

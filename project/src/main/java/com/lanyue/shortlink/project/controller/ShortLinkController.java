@@ -57,4 +57,22 @@ public class ShortLinkController {
         shortLinkService.updateShortLink(requestParam);
         return Results.success();
     }
+
+    /**
+     * 删除分组下所有短链接
+     */
+    @PostMapping("/api/short-link/v1/delete-by-gid")
+    public Result<Void> deleteByGid(@RequestParam String gid) {
+        shortLinkService.deleteByGid(gid);
+        return Results.success();
+    }
+
+    /**
+     * 根据URL获取对应网站的标题
+     */
+    @GetMapping("/api/short-link/v1/title")
+    public Result<String> getTitleByUrl(@RequestParam("url") String url) {
+        String title = shortLinkService.getTitleByUrl(url);
+        return Results.success(title);
+    }
 }

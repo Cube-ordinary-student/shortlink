@@ -44,4 +44,27 @@ public interface ShortLinkService extends IService<ShortLinkDO> {
      * @param requestParam
      */
     void updateShortLink(ShortLinkUpdateReqDTO requestParam);
+
+    /**
+     * 短链接跳转：根据短链接URI还原原始链接
+     *
+     * @param shortUri 短链接URI
+     * @return 原始链接
+     */
+    String restoreUrl(String shortUri);
+
+    /**
+     * 根据分组标识删除分组下所有短链接
+     *
+     * @param gid 分组标识
+     */
+    void deleteByGid(String gid);
+
+    /**
+     * 根据URL获取对应网站的标题
+     *
+     * @param url 目标网站地址
+     * @return 网站标题
+     */
+    String getTitleByUrl(String url);
 }
