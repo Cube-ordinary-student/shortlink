@@ -1,23 +1,26 @@
+
 package com.lanyue.shortlink.project.config;
 
-import com.lanyue.shortlink.project.common.biz.user.UserTransmitFilter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
+import com.lanyue.shortlink.project.common.biz.user.UserTransmitInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
-public class UserConfiguration {
+/**
+ * 用户配置自动装配 */
+@Configuration(value = "userConfigurationByProject")
+@RequiredArgsConstructor
+public class UserConfiguration implements WebMvcConfigurer {
+
+    private final UserTransmitInterceptor userTransmitInterceptor;
 
     /**
-     * 用户信息透传过滤器
+     * 用户信息传递过滤器
      */
-    @Bean
-    public FilterRegistrationBean<UserTransmitFilter> globalUserTransmitFilter() {
-        FilterRegistrationBean<UserTransmitFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new UserTransmitFilter());
-        registration.addUrlPatterns("/*");
-        registration.setName("userTransmitFilter");
-        registration.setOrder(0);
-        return registration;
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(userTransmitInterceptor)
+                .addPathPatterns("/**");
     }
 }

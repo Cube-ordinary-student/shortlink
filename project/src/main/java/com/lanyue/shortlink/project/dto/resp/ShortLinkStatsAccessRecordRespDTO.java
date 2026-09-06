@@ -1,13 +1,20 @@
+
 package com.lanyue.shortlink.project.dto.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 /**
- * 短链接访问记录返回参数
- */
+ * 短链接监控访问记录响应参数 */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShortLinkStatsAccessRecordRespDTO {
 
     /**
@@ -26,7 +33,7 @@ public class ShortLinkStatsAccessRecordRespDTO {
     private String os;
 
     /**
-     * IP地址
+     * ip
      */
     private String ip;
 
@@ -53,5 +60,6 @@ public class ShortLinkStatsAccessRecordRespDTO {
     /**
      * 访问时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 }

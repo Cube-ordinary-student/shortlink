@@ -1,11 +1,11 @@
+
 package com.lanyue.shortlink.project.common.convention.exception;
 
 import com.lanyue.shortlink.project.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.project.common.convention.errorcode.IErrorCode;
 
 /**
- * 远程服务调用异常
- */
+ * 远程服务调用异常 */
 public class RemoteException extends AbstractException {
 
     public RemoteException(String message) {
@@ -23,8 +23,8 @@ public class RemoteException extends AbstractException {
     @Override
     public String toString() {
         return "RemoteException{" +
-                "errorCode='" + getErrorCode() + '\'' +
-                ", errorMessage='" + getErrorMessage() + '\'' +
+                "code='" + errorCode + "'," +
+                "message='" + errorMessage + "'" +
                 '}';
     }
 }

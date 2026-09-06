@@ -1,12 +1,14 @@
+
 package com.lanyue.shortlink.project.dto.req;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lanyue.shortlink.project.dao.entity.LinkAccessLogsDO;
 import lombok.Data;
 
 /**
- * 短链接访问记录请求参数
- */
+ * 短链接监控访问记录请求参数 */
 @Data
-public class ShortLinkStatsAccessRecordReqDTO {
+public class ShortLinkStatsAccessRecordReqDTO extends Page<LinkAccessLogsDO> {
 
     /**
      * 完整短链接
@@ -29,17 +31,7 @@ public class ShortLinkStatsAccessRecordReqDTO {
     private String endDate;
 
     /**
-     * 启用标识
+     * 启用标识 0：启用 1：未启用
      */
     private Integer enableStatus;
-
-    /**
-     * 当前页码
-     */
-    private Long current;
-
-    /**
-     * 每页数量
-     */
-    private Long size;
 }

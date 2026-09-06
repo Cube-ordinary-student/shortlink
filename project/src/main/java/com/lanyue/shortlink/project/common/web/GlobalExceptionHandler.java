@@ -1,16 +1,17 @@
+
 package com.lanyue.shortlink.project.common.web;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.lanyue.shortlink.project.common.convention.errorcode.BaseErrorCode;
-import com.lanyue.shortlink.project.common.convention.exception.ClientException;
-import com.lanyue.shortlink.project.common.convention.exception.RemoteException;
-import com.lanyue.shortlink.project.common.convention.exception.ServiceException;
+import com.lanyue.shortlink.project.common.convention.exception.AbstractException;
 import com.lanyue.shortlink.project.common.convention.result.Result;
 import com.lanyue.shortlink.project.common.convention.result.Results;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,52 +21,53 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Optional;
 
 /**
- * 全局异常处理器
- */
+ * 全局异常处理器 */
+@Component
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * 拦截参数验证异常
+     */
     @SneakyThrows
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public Result<Void> methodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex
-    ) {
+    public Result validExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
-        FieldError firstFieldError = CollectionUtil.getFirst(bindingResult
-                .getFieldErrors()
-        );
-        String errorMessage = Optional.ofNullable(firstFieldError)
+        FieldError firstFieldError = CollectionUtil.getFirst(bindingResult.getFieldErrors());
+        String exceptionStr = Optional.ofNullable(firstFieldError)
                 .map(FieldError::getDefaultMessage)
                 .orElse(StrUtil.EMPTY);
-        log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), errorMessage, ex);
-        return Results.failure(BaseErrorCode.CLIENT_ERROR.code(), errorMessage);
+        log.error("[{}] {} [ex] {}", request.getMethod(), getUrl(request), exceptionStr);
+        return Results.failure(BaseErrorCode.CLIENT_ERROR.code(), exceptionStr);
     }
 
-    @ExceptionHandler(value = {ClientException.class})
-    public Result<Void> clientException(HttpServletRequest request, ClientException ex
-    ) {
-        log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.getErrorMessage(), ex);
+    /**
+     * 拦截应用内抛出的异常
+     */
+    @ExceptionHandler(value = {AbstractException.class})
+    public Result abstractException(HttpServletRequest request, AbstractException ex) {
+        if (ex.getCause() != null) {
+            log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString(), ex.getCause());
+            return Results.failure(ex);
+        }
+        log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString());
         return Results.failure(ex);
     }
 
-    @ExceptionHandler(value = {ServiceException.class})
-    public Result<Void> serviceException(HttpServletRequest request, ServiceException ex
-    ) {
-        log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.getErrorMessage(), ex);
-        return Results.failure(ex);
-    }
-
-    @ExceptionHandler(value = {RemoteException.class})
-    public Result<Void> remoteException(HttpServletRequest request, RemoteException ex
-    ) {
-        log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.getErrorMessage(), ex);
-        return Results.failure(ex);
-    }
-
+    /**
+     * 拦截未捕获异常
+     */
     @ExceptionHandler(value = Throwable.class)
-    public Result<Void> defaultErrorHandler(HttpServletRequest request, Throwable throwable
-    ) {
-        log.error("[{}] {} ", request.getMethod(), request.getRequestURL().toString(), throwable);
-        return Results.failure(BaseErrorCode.SERVICE_ERROR.code(), BaseErrorCode.SERVICE_ERROR.message());
+    public Result defaultErrorHandler(HttpServletRequest request, Throwable throwable) {
+        log.error("[{}] {} ", request.getMethod(), getUrl(request), throwable);
+        return Results.failure();
+    }
+
+    private String getUrl(HttpServletRequest request) {
+        if (StringUtils.isEmpty(request.getQueryString())) {
+            return request.getRequestURL().toString();
+        }
+        return request.getRequestURL().toString() + "?" + request.getQueryString();
     }
 }

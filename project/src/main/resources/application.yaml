@@ -1,5 +1,5 @@
 server:
-  port: 8002
+  port: 8001
 
 spring:
   application:
@@ -9,35 +9,35 @@ spring:
     url: jdbc:shardingsphere:classpath:shardingsphere-config-${database.env:dev}.yaml
   data:
     redis:
-      host: localhost
+      host: 127.0.0.1
       port: 6379
       password: 123456
-      timeout: 3000ms
-      lettuce:
-        pool:
-          max-active: 8
-          max-idle: 8
-          min-idle: 2
-          max-wait: -1ms
+  mvc:
+    view:
+      prefix: /templates/
+      suffix: .html
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
-
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      id-type: auto
-      table-underline: true
-
-logging:
-  level:
-    root: INFO
-    com.lanyue.shortlink.project: DEBUG
+        server-addr: 127.0.0.1:8848
 
 short-link:
   domain:
-    default: localhost:8080
+    default: nurl.ink:8001
+  stats:
+    locale:
+      amap-key: 824c511f0997586ea016f979fdb23087
+  goto-domain:
+    white-list:
+      enable: false
+      names: 'lanyue'
+      details:
+        - lanyue.com
+        - zhihu.com
+        - juejin.cn
+        - cnblogs.com
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml

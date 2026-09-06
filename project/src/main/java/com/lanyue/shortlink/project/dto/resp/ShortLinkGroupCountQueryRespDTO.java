@@ -1,10 +1,11 @@
+
 package com.lanyue.shortlink.project.dto.resp;
 
-import lombok.Builder;
 import lombok.Data;
 
+/**
+ * 短链接分组查询返回参数 */
 @Data
-@Builder
 public class ShortLinkGroupCountQueryRespDTO {
 
     /**
@@ -13,7 +14,7 @@ public class ShortLinkGroupCountQueryRespDTO {
     private String gid;
 
     /**
-     * 分组数量
+     * 短链接数量
      */
-    private Integer count;
+    private Integer shortLinkCount;
 }

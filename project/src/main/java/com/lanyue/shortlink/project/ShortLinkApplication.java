@@ -1,15 +1,19 @@
+
 package com.lanyue.shortlink.project;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@MapperScan("com.lanyue.shortlink.project.dao.mapper")
+/**
+ * 短链接应用 */
 @SpringBootApplication
-@ComponentScan(basePackages = "com.lanyue.shortlink.project")
-public class ProjectApplication {
+@EnableDiscoveryClient
+@MapperScan("com.lanyue.shortlink.project.dao.mapper")
+public class ShortLinkApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(ProjectApplication.class, args);
+        SpringApplication.run(ShortLinkApplication.class, args);
     }
 }

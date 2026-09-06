@@ -1,13 +1,14 @@
+
 package com.lanyue.shortlink.project.dto.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 短链接分页返回参数 */
 @Data
-@Builder
 public class ShortLinkPageRespDTO {
 
     /**

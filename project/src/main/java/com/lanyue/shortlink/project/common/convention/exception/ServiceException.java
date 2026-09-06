@@ -1,11 +1,13 @@
+
 package com.lanyue.shortlink.project.common.convention.exception;
 
 import com.lanyue.shortlink.project.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.project.common.convention.errorcode.IErrorCode;
 
+import java.util.Optional;
+
 /**
- * 服务端异常
- */
+ * 服务端异常 */
 public class ServiceException extends AbstractException {
 
     public ServiceException(String message) {
@@ -21,14 +23,15 @@ public class ServiceException extends AbstractException {
     }
 
     public ServiceException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable, errorCode);
+        super(Optional.ofNullable(message).orElse(errorCode.message()), throwable, errorCode);
     }
 
     @Override
     public String toString() {
         return "ServiceException{" +
-                "errorCode='" + getErrorCode() + '\'' +
-                ", errorMessage='" + getErrorMessage() + '\'' +
+                "code='" + errorCode + "'," +
+                "message='" + errorMessage + "'" +
                 '}';
     }
 }
+

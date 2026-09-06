@@ -1,11 +1,11 @@
+
 package com.lanyue.shortlink.project.common.convention.exception;
 
 import com.lanyue.shortlink.project.common.convention.errorcode.BaseErrorCode;
 import com.lanyue.shortlink.project.common.convention.errorcode.IErrorCode;
 
 /**
- * 客户端异常
- */
+ * 客户端异常 */
 public class ClientException extends AbstractException {
 
     public ClientException(IErrorCode errorCode) {
@@ -27,8 +27,8 @@ public class ClientException extends AbstractException {
     @Override
     public String toString() {
         return "ClientException{" +
-                "errorCode='" + getErrorCode() + '\'' +
-                ", errorMessage='" + getErrorMessage() + '\'' +
+                "code='" + errorCode + "'," +
+                "message='" + errorMessage + "'" +
                 '}';
     }
 }

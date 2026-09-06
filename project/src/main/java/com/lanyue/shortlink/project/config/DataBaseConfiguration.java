@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.project.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
@@ -8,17 +9,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 数据库持久层配置类
- * ；value 属性指定该配置类在容器中的 bean 名称为 dataBaseConfigurationByAdmin。
- */
-@Configuration(value = "dataBaseConfigurationByAdmin")
+ * 数据库持久层配置类 */
+@Configuration
 public class DataBaseConfiguration {
+
     /**
      * 分页插件
      */
     @Bean
     @ConditionalOnMissingBean
-    public MybatisPlusInterceptor mybatisPlusInterceptorByAdmin() {
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;

@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.project.dto.req;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,10 +9,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Builder
+/**
+ * 短链接创建请求对象 */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ShortLinkCreateReqDTO {
 
     /**

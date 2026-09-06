@@ -1,10 +1,10 @@
+
 package com.lanyue.shortlink.project.dto.req;
 
 import lombok.Data;
 
 /**
- * 短链接统计请求参数
- */
+ * 短链接监控请求参数 */
 @Data
 public class ShortLinkStatsReqDTO {
 
@@ -19,11 +19,6 @@ public class ShortLinkStatsReqDTO {
     private String gid;
 
     /**
-     * 启用标识
-     */
-    private Integer enableStatus;
-
-    /**
      * 开始日期
      */
     private String startDate;
@@ -32,4 +27,9 @@ public class ShortLinkStatsReqDTO {
      * 结束日期
      */
     private String endDate;
+
+    /**
+     * 启用标识 0：启用 1：未启用
+     */
+    private Integer enableStatus;
 }

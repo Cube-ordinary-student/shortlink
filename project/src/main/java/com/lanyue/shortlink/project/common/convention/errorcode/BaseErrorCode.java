@@ -1,10 +1,8 @@
+
 package com.lanyue.shortlink.project.common.convention.errorcode;
 
-import com.lanyue.shortlink.project.common.convention.errorcode.IErrorCode;
-
 /**
- * 基础错误码定义
- */
+ * 基础错误码定义 */
 public enum BaseErrorCode implements IErrorCode {
 
     // ========== 一级宏观错误码 客户端错误 ==========

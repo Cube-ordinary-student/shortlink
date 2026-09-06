@@ -1,70 +1,87 @@
+
 package com.lanyue.shortlink.project.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lanyue.shortlink.project.dao.entity.ShortLinkDO;
+import com.lanyue.shortlink.project.dto.biz.ShortLinkStatsRecordDTO;
+import com.lanyue.shortlink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import com.lanyue.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import com.lanyue.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import com.lanyue.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
+import com.lanyue.shortlink.project.dto.resp.ShortLinkBatchCreateRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.lanyue.shortlink.project.dto.resp.ShortLinkPageRespDTO;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import java.util.List;
 
+/**
+ * 短链接接口层 */
 public interface ShortLinkService extends IService<ShortLinkDO> {
 
     /**
      * 创建短链接
      *
-     * @param requestParam
-     * @return
+     * @param requestParam 创建短链接请求参数
+     * @return 短链接创建信息
      */
     ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam);
 
     /**
-     * 分页查询短链接
+     * 根据分布式锁创建短链接
      *
-     * @param requestParam
-     * @return
+     * @param requestParam 创建短链接请求参数
+     * @return 短链接创建信息
      */
-    IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam);
+    ShortLinkCreateRespDTO createShortLinkByLock(ShortLinkCreateReqDTO requestParam);
 
     /**
-     * 查询分组短链接数量
+     * 批量创建短链接
      *
-     * @param requestParam
-     * @return
+     * @param requestParam 批量创建短链接请求参数
+     * @return 批量创建短链接返回参数
      */
-    List<ShortLinkGroupCountQueryRespDTO> queryShortLinkGroupCount(List<String> requestParam);
+    ShortLinkBatchCreateRespDTO batchCreateShortLink(ShortLinkBatchCreateReqDTO requestParam);
 
     /**
      * 修改短链接
      *
-     * @param requestParam
+     * @param requestParam 修改短链接请求参数
      */
     void updateShortLink(ShortLinkUpdateReqDTO requestParam);
 
     /**
-     * 短链接跳转：根据短链接URI还原原始链接
+     * 分页查询短链接
      *
-     * @param shortUri 短链接URI
-     * @return 原始链接
+     * @param requestParam 分页查询短链接请求参数
+     * @return 短链接分页返回结果
      */
-    String restoreUrl(String shortUri);
+    IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam);
 
     /**
-     * 根据分组标识删除分组下所有短链接
+     * 查询短链接分组内数量
      *
-     * @param gid 分组标识
+     * @param requestParam 查询短链接分组内数量请求参数
+     * @return 查询短链接分组内数量响应
      */
-    void deleteByGid(String gid);
+    List<ShortLinkGroupCountQueryRespDTO> listGroupShortLinkCount(List<String> requestParam);
 
     /**
-     * 根据URL获取对应网站的标题
+     * 短链接跳转
      *
-     * @param url 目标网站地址
-     * @return 网站标题
+     * @param shortUri 短链接后缀
+     * @param request  HTTP 请求
+     * @param response HTTP 响应
      */
-    String getTitleByUrl(String url);
+    void restoreUrl(String shortUri, ServletRequest request, ServletResponse response);
+
+    /**
+     * 短链接统计
+     *
+     * @param shortLinkStatsRecord 短链接统计实体参数
+     */
+    void shortLinkStats(ShortLinkStatsRecordDTO shortLinkStatsRecord);
 }

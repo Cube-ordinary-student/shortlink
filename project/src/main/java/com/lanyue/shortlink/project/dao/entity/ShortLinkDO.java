@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.project.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,9 +11,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * 短链接实体 */
 @Data
-@TableName("t_link")
 @Builder
+@TableName("t_link")
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShortLinkDO extends BaseDO {
