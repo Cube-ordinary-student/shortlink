@@ -27,8 +27,8 @@ public class ClientException extends AbstractException {
     @Override
     public String toString() {
         return "ClientException{" +
-                "errorCode='" + getErrorCode() + '\'' +
-                ", errorMessage='" + getErrorMessage() + '\'' +
+                "code='" + errorCode + "'," +
+                "message='" + errorMessage + "'" +
                 '}';
     }
 }

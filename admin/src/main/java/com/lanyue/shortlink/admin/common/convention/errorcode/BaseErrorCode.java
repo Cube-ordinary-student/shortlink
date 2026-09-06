@@ -1,3 +1,4 @@
+
 package com.lanyue.shortlink.admin.common.convention.errorcode;
 
 /**
@@ -22,16 +23,16 @@ public enum BaseErrorCode implements IErrorCode {
     IDEMPOTENT_TOKEN_NULL_ERROR("A000200", "幂等Token为空"),
     IDEMPOTENT_TOKEN_DELETE_ERROR("A000201", "幂等Token已被使用或失效"),
 
+    // ========== 二级宏观错误码 系统请求操作频繁 ==========
+    FLOW_LIMIT_ERROR("A000300", "当前系统繁忙，请稍后再试"),
+
     // ========== 一级宏观错误码 系统执行出错 ==========
     SERVICE_ERROR("B000001", "系统执行出错"),
     // ========== 二级宏观错误码 系统执行超时 ==========
     SERVICE_TIMEOUT_ERROR("B000100", "系统执行超时"),
 
     // ========== 一级宏观错误码 调用第三方服务出错 ==========
-    REMOTE_ERROR("C000001", "调用第三方服务出错"),
-
-    // ========== 限流 ==========
-    FLOW_LIMIT_ERROR("A000300", "当前系统繁忙，请稍后再试");
+    REMOTE_ERROR("C000001", "调用第三方服务出错");
 
     private final String code;
 

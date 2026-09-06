@@ -1,5 +1,7 @@
 package com.lanyue.shortlink.admin.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lanyue.shortlink.admin.common.database.BaseDO;
 import lombok.AllArgsConstructor;
@@ -45,5 +47,6 @@ public class GroupDO extends BaseDO {
     /**
      * 删除标识 0：未删除 1：已删除
      */
+    @TableField(fill = FieldFill.INSERT)
     private Integer delFlag;
 }

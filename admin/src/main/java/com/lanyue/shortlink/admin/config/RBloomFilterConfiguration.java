@@ -5,25 +5,26 @@ import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration(value = "rBloomFilterConfigurationByAdmin")
 public class RBloomFilterConfiguration {
+
     /**
      * 防止用户注册查询数据库的布隆过滤器
      */
     @Bean
-    public RBloomFilter<String> userRegisterBloomFilter(RedissonClient redissonClient) {
-        RBloomFilter<String> bloomFilter = redissonClient.getBloomFilter("userRegisterBloomFilter");
-        bloomFilter.tryInit(100000000L, 0.001);
-        return bloomFilter;
-    }
-    /**
-     * 防止用户分组查询数据库的布隆过滤器
-     */
-    @Bean
-    public RBloomFilter<String> userGroupBloomFilter(RedissonClient redissonClient) {
-        RBloomFilter<String> bloomFilter = redissonClient.getBloomFilter("userGroupBloomFilter");
-        bloomFilter.tryInit(100000000L, 0.001);
-        return bloomFilter;
+    public RBloomFilter<String> userRegisterCachePenetrationBloomFilter(RedissonClient redissonClient) {
+        RBloomFilter<String> cachePenetrationBloomFilter = redissonClient.getBloomFilter("userRegisterCachePenetrationBloomFilter");
+        cachePenetrationBloomFilter.tryInit(100000000L, 0.001);
+        return cachePenetrationBloomFilter;
     }
 
+    /**
+     * 防止分组标识注册查询数据库的布隆过滤器
+     */
+    @Bean
+    public RBloomFilter<String> gidRegisterCachePenetrationBloomFilter(RedissonClient redissonClient) {
+        RBloomFilter<String> cachePenetrationBloomFilter = redissonClient.getBloomFilter("gidRegisterCachePenetrationBloomFilter");
+        cachePenetrationBloomFilter.tryInit(200000000L, 0.001);
+        return cachePenetrationBloomFilter;
+    }
 }
